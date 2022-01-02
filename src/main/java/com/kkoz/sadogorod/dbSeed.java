@@ -19,13 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class dbSeed implements CommandLineRunner {
 
-    RepoRole repoRole;
-    RepoUzer repoUzer;
+    private final RepoRole repoRole;
+    private final RepoUzer repoUzer;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        log.warn(" <-- Initialization started (lol) -->");
+        log.warn(" <-- Initialization started -->");
 
         initRoles();
 
