@@ -1,0 +1,12 @@
+version: '2'
+services:
+  db:
+    image: postgres:12.4-alpine
+    container_name: sad-ogorod.db
+    hostname: sad-ogorod.db
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "55432:5432"
+    env_file:
+      - .env
