@@ -56,4 +56,18 @@ public class DtoUzerUpdate {
         this.isActive = entity.getIsActive();
         this.banUntil = entity.getBanUntil().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
+
+    public DtoUzerUpdate(DtoUzer dtoUzer) {
+        this.id = dtoUzer.getId();
+        this.username = dtoUzer.getUsername();
+        this.password = "";
+        this.lastName = dtoUzer.getLastName();
+        this.firstName = dtoUzer.getFirstName();
+        this.patronymicName = dtoUzer.getPatronymicName();
+        this.email = dtoUzer.getEmail();
+        this.phone = dtoUzer.getPhone();
+        this.role = dtoUzer.getRole();
+        this.isActive = dtoUzer.getIsActive();
+        this.banUntil = dtoUzer.getBanUntil();
+    }
 }

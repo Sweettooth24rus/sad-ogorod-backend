@@ -5,18 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Uzer extends MetaEntityInteger {
+public class Uzer extends MetaEntityInteger implements UserDetails {
 
     private String username;
 
@@ -38,4 +42,29 @@ public class Uzer extends MetaEntityInteger {
     private Boolean isActive = true;
 
     private LocalDate banUntil;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(this.getRole());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.getIsActive();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.getIsActive();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.getIsActive();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.getIsActive();
+    }
 }

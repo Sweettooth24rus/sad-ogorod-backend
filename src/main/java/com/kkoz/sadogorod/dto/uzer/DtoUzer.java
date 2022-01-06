@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DtoUzer {
 
+    private Integer id;
     private String username;
     private String password;
     private String lastName;
@@ -20,9 +21,11 @@ public class DtoUzer {
     private String email;
     private String phone;
     private String role;
+    private Boolean isActive;
     private String banUntil;
 
     public DtoUzer(Uzer entity) {
+        this.id = entity.getId();
         this.username = entity.getUsername();
         this.password = "";
         this.lastName = entity.getLastName();
@@ -31,6 +34,7 @@ public class DtoUzer {
         this.email = entity.getEmail();
         this.phone = entity.getPhone();
         this.role = entity.getRole().getKey();
+        this.isActive = entity.getIsActive();
         this.banUntil = entity.getIsActive()
                 ? null
                 : entity.getBanUntil().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
