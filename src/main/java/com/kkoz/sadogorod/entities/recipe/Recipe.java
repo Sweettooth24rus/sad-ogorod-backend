@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 @NoArgsConstructor
@@ -19,4 +20,7 @@ public class Recipe extends MetaEntityInteger {
     private String name;
     private String description;
     private FileUpload photo;
+    @Embedded
+    private Advice advice;
+    private String comment;
 }
