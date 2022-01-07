@@ -2,6 +2,7 @@ package com.kkoz.sadogorod.filters;
 
 import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
+import com.kkoz.sadogorod.entities.uzer.Uzer_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ public class SpecUzer {
 
     public Specification<Uzer> getRoleFilter(UzerRole role) {
         return (root, criteriaQuery, criteriaBuilder) -> (
-                criteriaBuilder.isMember(role, root.get(Uzer_.ROLES))
+                criteriaBuilder.isMember(role, root.get(Uzer_.ROLE))
         );
     }
 

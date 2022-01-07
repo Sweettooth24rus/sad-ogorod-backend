@@ -12,6 +12,7 @@ import com.kkoz.sadogorod.filters.SpecUzer;
 import com.kkoz.sadogorod.repositories.RepoUzer;
 import com.kkoz.sadogorod.security.dto.DtoAuthCredentials;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,7 @@ public class ServiceUzer implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ServicePageable servicePageable;
 
+    @SneakyThrows
     @Override
     public Uzer loadUserByUsername(String username) throws UsernameNotFoundException {
         return repoUzer.getByUsername(username)
@@ -49,6 +52,7 @@ public class ServiceUzer implements UserDetailsService {
                 ));
     }
 
+    @SneakyThrows
     public Uzer getByUsername(String username) {
         return repoUzer.getByUsername(username)
                 .orElseThrow(() -> new LoginException(
@@ -147,21 +151,10 @@ public class ServiceUzer implements UserDetailsService {
         uzer.setFirstName(dtoUzer.getFirstName());
         uzer.setPatronymicName(dtoUzer.getPatronymicName());
         uzer.setEmail(dtoUzer.getEmail());
-        uzer.setOrganization(repoOrganization.findById(dtoUzer.getOrganization())
-                .orElseThrow(
-                        () -> new NotFoundException(
-                                Organization.class.getSimpleName(),
-                                "id",
-                                dtoUzer.getOrganization().toString()
-                        )
-                )
-        );
-        uzer.setRoles(dtoUzer.getRoles().stream()
-                .map(UzerRole::getRoleFromValue)
-                .collect(Collectors.toSet())
-        );
+        uzer.setPhone(dtoUzer.getPhone());
+        uzer.setRole(UzerRole.getRoleFromKey(dtoUzer.getRole()));
         uzer.setIsActive(dtoUzer.getIsActive());
-        uzer.setIsEsiaUzer(dtoUzer.getIsEsiaUzer());
+        uzer.setBanUntil(LocalDate.parse(dtoUzer.getBanUntil()));
 
         Uzer savedUzer;
 
@@ -187,25 +180,6 @@ public class ServiceUzer implements UserDetailsService {
 
     public boolean existsByUsername(String username) {
         return repoUzer.existsByUsername(username);
-    }
-
-    public Uzer getCurrentUzer_thenCheckOrganizationAndDistrict() {
-        Uzer currentUzer = this.getCurrentUzer();
-
-        if (currentUzer.getOrganization() == null) {
-            throw new UzerOrganizationException(
-                    currentUzer.getUsername()
-            );
-        }
-
-        if (currentUzer.getOrganization().getMunicipalFormations() == null) {
-            throw new UzerDistrictException(
-                    currentUzer.getUsername(),
-                    currentUzer.getOrganization().getName()
-            );
-        }
-
-        return currentUzer;
     }
 
 }

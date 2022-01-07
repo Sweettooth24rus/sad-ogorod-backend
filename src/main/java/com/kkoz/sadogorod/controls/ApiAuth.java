@@ -48,7 +48,7 @@ public class ApiAuth {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DtoAuthSuccess> login(@Valid @RequestBody DtoAuthCredentials credentials) {
+    public ResponseEntity<DtoAuthSuccess> login(@Valid @RequestBody DtoAuthCredentials credentials) throws LoginException {
         log.info("-> POST: Authentication: uzername[{}]", credentials.getUsername());
 
         Authentication authentication;
@@ -78,8 +78,8 @@ public class ApiAuth {
         String jwt          = jwtUtils.generateJwt(uzer);
         String refreshToken = jwtUtils.generateRefreshToken(uzer);
 
-        log.info("<- POST: Authentication success: uzername[{}], id[{}], fio[{}], roles{}",
-                uzer.getUsername(), uzer.getId(), uzer.getFIO(), uzer.getRoles());
+        log.info("<- POST: Authentication success: id[{}], uzername[{}], role[{}]",
+                uzer.getId(), uzer.getUsername(), uzer.getRole());
 
         return ResponseEntity.ok(new DtoAuthSuccess(jwt, refreshToken));
     }
@@ -104,8 +104,8 @@ public class ApiAuth {
         String jwt = jwtUtils.generateJwt(uzer);
         String rt  = jwtUtils.generateRefreshToken(uzer);
 
-        log.info("<- POST: JWT renewal success: uzername[{}], id[{}], fio[{}], roles{}",
-                uzer.getUsername(), uzer.getId(), uzer.getFIO(), uzer.getRoles());
+        log.info("<- POST: JWT renewal success: id[{}], uzername[{}], role[{}]",
+                uzer.getId(), uzer.getUsername(), uzer.getRole());
 
         return ResponseEntity.ok(new DtoAuthSuccess(jwt, rt));
 
@@ -130,8 +130,8 @@ public class ApiAuth {
         Map<String, String> response = new HashMap<>();
         response.put("response", "Выход успешно осуществлён.");
 
-        log.info("<- GET: Logout success: uzername[{}], id[{}], fio[{}], roles{}",
-                uzer.getUsername(), uzer.getId(), uzer.getFIO(), uzer.getRoles());
+        log.info("<- GET: Logout success: id[{}], uzername[{}], role[{}]",
+                uzer.getId(), uzer.getUsername(), uzer.getRole());
 
         return ResponseEntity.ok(response);
     }

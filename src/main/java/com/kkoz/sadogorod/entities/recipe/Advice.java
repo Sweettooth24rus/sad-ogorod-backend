@@ -1,6 +1,5 @@
 package com.kkoz.sadogorod.entities.recipe;
 
-import com.kkoz.sadogorod.entities.meta.MetaEntityInteger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +14,7 @@ import javax.persistence.Enumerated;
 @Getter
 @Setter
 @Embeddable
-public class Advice extends MetaEntityInteger {
-
-    private Recipe recipe;
+public class Advice {
 
     private Integer days;
     @Enumerated(EnumType.STRING)
