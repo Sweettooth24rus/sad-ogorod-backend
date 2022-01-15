@@ -9,6 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpecUzer {
 
+    public Specification<Uzer> getUsernameFilter(String username) {
+        return (root, criteriaQuery, criteriaBuilder) -> (
+                criteriaBuilder.like(criteriaBuilder.lower(root.get(Uzer_.USERNAME)),
+                        "%" + username.toLowerCase() + "%"
+                )
+        );
+    }
+
     public Specification<Uzer> getFirstNameFilter(String firstName) {
         return (root, criteriaQuery, criteriaBuilder) -> (
                 criteriaBuilder.like(criteriaBuilder.lower(root.get(Uzer_.FIRST_NAME)),

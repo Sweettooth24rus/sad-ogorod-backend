@@ -7,6 +7,7 @@ import com.kkoz.sadogorod.dto.uzer.DtoUzerUpdate;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
 import com.kkoz.sadogorod.security.meta_annotation.HasRoleAdmin;
+import com.kkoz.sadogorod.security.meta_annotation.HasRoleAny;
 import com.kkoz.sadogorod.services.ServiceUzer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,20 +41,20 @@ public class ApiUzer {
     public Page<DtoUzerPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                            @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                            @RequestParam(required = false, defaultValue = "-id") String sort,
+                                           @RequestParam(required = false) String username,
                                            @RequestParam(required = false) String lastName,
                                            @RequestParam(required = false) String firstName,
                                            @RequestParam(required = false) String patronymicName,
                                            @RequestParam(required = false) String role,
                                            @RequestParam(required = false) String isActive) {
-        log.info("-> GET: Getting user page (page: {}, size: {}, sort: {}, lastName: {}, firstName: {}, patronymicName: {}," +
-                "role: {}, isActive: {})", page, size, sort, lastName, firstName, patronymicName, role, isActive);
-        Page<DtoUzerPagination> uzerPage = serviceUzer.getPage(page, size, sort, lastName, firstName, patronymicName, role, isActive);
-        log.info("<- GET: Got user page (page: {}, size: {}, sort: {}, lastName: {}, firstName: {}, patronymicName: {}," +
-                "role: {}, isActive: {})", page, size, sort, lastName, firstName, patronymicName, role, isActive);
+        log.info("-> GET: Getting user page (page: {}, size: {}, sort: {}, username: {}, lastName: {}, firstName: {}, patronymicName: {}," +
+                "role: {}, isActive: {})", page, size, sort, username, lastName, firstName, patronymicName, role, isActive);
+        Page<DtoUzerPagination> uzerPage = serviceUzer.getPage(page, size, sort, username, lastName, firstName, patronymicName, role, isActive);
+        log.info("<- GET: Got user page (page: {}, size: {}, sort: {}, username: {}, lastName: {}, firstName: {}, patronymicName: {}," +
+                "role: {}, isActive: {})", page, size, sort, username, lastName, firstName, patronymicName, role, isActive);
         return uzerPage;
     }
 
-    @HasRoleAdmin
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> createUzer(@Valid @RequestBody DtoUzer uzer) {
         log.info("-> POST: Adding new user: {}", uzer);
@@ -83,7 +84,7 @@ public class ApiUzer {
                 .collect(Collectors.toList());
     }
 
-    @HasRoleAdmin
+    @HasRoleAny
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateUzer(@PathVariable @Min(1) Integer id,
                                                           @Valid @RequestBody DtoUzerUpdate uzer) {

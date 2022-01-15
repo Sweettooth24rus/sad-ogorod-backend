@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAuthority('OPERATOR')")
-public @interface HasRoleOperator {
+@PreAuthorize("hasAuthority('HYPER')")
+public @interface HasRoleHyper {
 }

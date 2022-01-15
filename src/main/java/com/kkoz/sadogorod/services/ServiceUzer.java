@@ -76,11 +76,16 @@ public class ServiceUzer implements UserDetailsService {
         return this.getByUsername(username);
     }
 
-    public Page<DtoUzerPagination> getPage(Integer page, Integer size, String sort, String lastName, String firstName, String patronymicName,
+    public Page<DtoUzerPagination> getPage(Integer page, Integer size, String sort, String username,
+                                           String lastName, String firstName, String patronymicName,
                                            String role, String isActive) {
         Pageable pageConfig = servicePageable.getPageConfig(page, size, sort);
         //TODO Фильтрации и сортировки
         Specification spec = Specification.where(null);
+
+        if (username != null) {
+            spec = spec.and(specUzer.getUsernameFilter(username));
+        }
 
         if (firstName != null) {
             spec = spec.and(specUzer.getFirstNameFilter(firstName));
