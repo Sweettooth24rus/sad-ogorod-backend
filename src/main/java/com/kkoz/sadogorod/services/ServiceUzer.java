@@ -29,7 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,7 +158,6 @@ public class ServiceUzer implements UserDetailsService {
         uzer.setPhone(dtoUzer.getPhone());
         uzer.setRole(UzerRole.getRoleFromKey(dtoUzer.getRole()));
         uzer.setIsActive(dtoUzer.getIsActive());
-        uzer.setBanUntil(LocalDate.parse(dtoUzer.getBanUntil()));
 
         Uzer savedUzer;
 

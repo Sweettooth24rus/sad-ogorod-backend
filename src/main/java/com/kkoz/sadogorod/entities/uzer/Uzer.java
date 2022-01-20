@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,8 +39,6 @@ public class Uzer extends MetaEntityInteger implements UserDetails {
     private UzerRole role;
 
     private Boolean isActive = true;
-
-    private LocalDate banUntil;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

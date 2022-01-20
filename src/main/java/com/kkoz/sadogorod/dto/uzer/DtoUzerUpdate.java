@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor
@@ -41,8 +40,6 @@ public class DtoUzerUpdate {
 
     private Boolean isActive;
 
-    private String banUntil;
-
     public DtoUzerUpdate(Uzer entity) {
         this.id = entity.getId();
         this.username = entity.getUsername();
@@ -54,7 +51,6 @@ public class DtoUzerUpdate {
         this.phone = entity.getPhone();
         this.role = entity.getRole().getKey();
         this.isActive = entity.getIsActive();
-        this.banUntil = entity.getBanUntil().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     public DtoUzerUpdate(DtoUzer dtoUzer) {
@@ -68,6 +64,5 @@ public class DtoUzerUpdate {
         this.phone = dtoUzer.getPhone();
         this.role = dtoUzer.getRole();
         this.isActive = dtoUzer.getIsActive();
-        this.banUntil = dtoUzer.getBanUntil();
     }
 }

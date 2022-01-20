@@ -5,8 +5,6 @@ import com.kkoz.sadogorod.entities.uzer.Uzer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.format.DateTimeFormatter;
-
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -22,7 +20,6 @@ public class DtoUzer {
     private String phone;
     private String role;
     private Boolean isActive;
-    private String banUntil;
 
     public DtoUzer(Uzer entity) {
         this.id = entity.getId();
@@ -35,8 +32,5 @@ public class DtoUzer {
         this.phone = entity.getPhone();
         this.role = entity.getRole().getKey();
         this.isActive = entity.getIsActive();
-        this.banUntil = entity.getIsActive()
-                ? null
-                : entity.getBanUntil().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 }
