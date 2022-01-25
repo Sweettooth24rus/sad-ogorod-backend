@@ -6,8 +6,6 @@ import com.kkoz.sadogorod.dto.uzer.DtoUzerPagination;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerUpdate;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
-import com.kkoz.sadogorod.security.meta_annotation.HasRoleAdmin;
-import com.kkoz.sadogorod.security.meta_annotation.HasRoleAny;
 import com.kkoz.sadogorod.services.ServiceUzer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,7 +34,6 @@ public class ApiUzer {
         this.serviceUzer = serviceUzer;
     }
 
-    @HasRoleAdmin
     @GetMapping("/all")
     public Page<DtoUzerPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                            @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -66,7 +63,6 @@ public class ApiUzer {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @HasRoleAdmin
     @GetMapping("/{id}")
     public DtoUzer getUzer(@PathVariable @Min(1) Integer id) {
         log.info("-> GET: Getting Uzer with id [{}]", id);
@@ -75,7 +71,6 @@ public class ApiUzer {
         return dtoUzer;
     }
 
-    @HasRoleAdmin
     @GetMapping("/all/roles")
     public List<String> getRoles() {
         return Arrays.stream(UzerRole.values())
@@ -84,7 +79,6 @@ public class ApiUzer {
                 .collect(Collectors.toList());
     }
 
-    @HasRoleAny
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateUzer(@PathVariable @Min(1) Integer id,
                                                           @Valid @RequestBody DtoUzerUpdate uzer) {
@@ -96,7 +90,6 @@ public class ApiUzer {
         return ResponseEntity.ok(response);
     }
 
-    @HasRoleAdmin
     @PutMapping("/activity/{id}")
     public ResponseEntity<Map<String, String>> updateUzerActivity(@PathVariable @Min(1) Integer id) {
         log.info("-> PUT: Updating user [{}] activity", id);
@@ -105,5 +98,13 @@ public class ApiUzer {
         response.put("response", "User [" + updatedUzer.getId() + "] activity was updated to: " + updatedUzer.getIsActive());
         log.info("<- PUT: User [{}] activity was updated to: {}", updatedUzer.getId(), updatedUzer.getIsActive());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/current")
+    public DtoUzer getCurrentUzer() {
+        log.info("-> GET: Getting current Uzer");
+        DtoUzer dtoUzer = new DtoUzer(serviceUzer.getCurrentUzer());
+        log.info("<- GET: Got current Uzer");
+        return dtoUzer;
     }
 }

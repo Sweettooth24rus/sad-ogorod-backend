@@ -10,7 +10,6 @@ import com.kkoz.sadogorod.security.jwt.exceptions.RefreshTokenExpiredException;
 import com.kkoz.sadogorod.security.jwt.exceptions.RefreshTokenNotFoundException;
 import com.kkoz.sadogorod.security.jwt.refresh_token.ServiceRefreshToken;
 import com.kkoz.sadogorod.security.jwt.utils.JwtUtils;
-import com.kkoz.sadogorod.security.meta_annotation.HasRoleAny;
 import com.kkoz.sadogorod.services.ServiceUzer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -112,7 +111,6 @@ public class ApiAuth {
 
     }
 
-    @HasRoleAny
     @Transactional
     @GetMapping("/logout")
     public ResponseEntity<Map<String, String>> logout() {

@@ -1,7 +1,6 @@
 package com.kkoz.sadogorod.controls;
 
 import com.kkoz.sadogorod.entities.dictionaries.EntityDictionary;
-import com.kkoz.sadogorod.security.meta_annotation.HasRoleAny;
 import com.kkoz.sadogorod.services.ServiceDictionaries;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ public class ApiDictionaries {
 
     private final ServiceDictionaries serviceDictionaries;
 
-    @HasRoleAny
     @GetMapping("/all")
     public Map<String, List<EntityDictionary>> getAllItems() {
         log.info("-> Getting all dictionaries");

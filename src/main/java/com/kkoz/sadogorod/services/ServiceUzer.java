@@ -72,7 +72,7 @@ public class ServiceUzer implements UserDetailsService {
     public Uzer getCurrentUzer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getPrincipal().toString();
-        return this.getByUsername(username);
+        return this.getById(Integer.parseInt(username.substring(username.lastIndexOf("@") + 1)));
     }
 
     public Page<DtoUzerPagination> getPage(Integer page, Integer size, String sort, String username,

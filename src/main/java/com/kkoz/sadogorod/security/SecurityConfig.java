@@ -1,13 +1,10 @@
 package com.kkoz.sadogorod.security;
 
-import com.kkoz.sadogorod.security.jwt.FilterJwtExceptionHandler;
-import com.kkoz.sadogorod.security.jwt.FilterJwtVerifier;
 import com.kkoz.sadogorod.security.jwt.secret_key.ServiceJwtSecretKey;
 import com.kkoz.sadogorod.services.ServiceUzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AuthenticatedVoter;
@@ -20,10 +17,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,38 +52,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(this.authEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilterBefore(new FilterJwtExceptionHandler(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new FilterJwtVerifier(this.serviceJwtSecretKey), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests()
-                .antMatchers("/webjars/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
+                //.exceptionHandling()
+                //.authenticationEntryPoint(this.authEntryPoint)
+                //.and()
+                //.sessionManagement()
+                //.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                //.and()
+                //.addFilterBefore(new FilterJwtExceptionHandler(), UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(new FilterJwtVerifier(this.serviceJwtSecretKey), UsernamePasswordAuthenticationFilter.class)
+                //.authorizeRequests()
+                //.antMatchers("/webjars/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**").permitAll()
+                //.antMatchers("/auth/**").permitAll()
                 // Для доступа к ресурсам (файлам)
-                .antMatchers(HttpMethod.GET, "/api/file/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/application/pdf/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/report-expenses/pdf/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/report-activity/pdf/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/report-index/pdf/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/application/zip/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/application/zip/sig/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/application/refusal/file/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/consolidated/report-expenses/excel").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/consolidated/report-index/excel").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/consolidated/report-activity/excel").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/subsidy/pdf/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/subsidy/excel/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/additional-consideration/pdf/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/additional-consideration/excel/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/summary-data/excel/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/file/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/application/pdf/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/report-expenses/pdf/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/report-activity/pdf/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/report-index/pdf/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/application/zip/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/application/zip/sig/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/application/refusal/file/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/consolidated/report-expenses/excel").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/consolidated/report-index/excel").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/consolidated/report-activity/excel").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/subsidy/pdf/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/subsidy/excel/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/additional-consideration/pdf/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/additional-consideration/excel/*").permitAll()
+                //.antMatchers(HttpMethod.GET, "/api/summary-data/excel/*").permitAll()
                 // Для доступа к ресурсам (файлам) - END
-                .anyRequest()
-                .authenticated()
-                .accessDecisionManager(this.accessDecisionManager())
+                //.anyRequest()
+                //.authenticated()
+                //.accessDecisionManager(this.accessDecisionManager())
         ;
     }
 

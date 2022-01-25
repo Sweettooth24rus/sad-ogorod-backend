@@ -2,14 +2,11 @@ package com.kkoz.sadogorod.security.jwt.utils;
 
 
 import com.kkoz.sadogorod.entities.uzer.Uzer;
-import com.kkoz.sadogorod.security.jwt.exceptions.JwtExpirationException;
-import com.kkoz.sadogorod.security.jwt.exceptions.JwtValidationException;
-import com.kkoz.sadogorod.security.jwt.exceptions.ResourceJwtValidationException;
 import com.kkoz.sadogorod.security.jwt.refresh_token.RefreshToken;
 import com.kkoz.sadogorod.security.jwt.refresh_token.ServiceRefreshToken;
 import com.kkoz.sadogorod.security.jwt.secret_key.ServiceJwtSecretKey;
-import com.kkoz.sadogorod.utils.HttpRequestUtil;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
@@ -18,10 +15,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -75,7 +70,7 @@ public class JwtUtils {
     }
 
     public boolean verifyResourceJwt(String resourceJwt) {
-        try {
+        /*try {
             String requestUri;
 
             Optional<HttpServletRequest> optionalHttpServletRequest = HttpRequestUtil.getCurrentHttpRequest();
@@ -106,7 +101,8 @@ public class JwtUtils {
         }
         catch (JwtExpirationException | JwtValidationException | MalformedJwtException | SignatureException | ExpiredJwtException e) {
             throw new ResourceJwtValidationException();
-        }
+        }*/
+        return true;
     }
 
 }
