@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,6 +51,7 @@ public class ApiRecipe {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Transactional
     @GetMapping("/{id}")
     public DtoRecipe getRecipe(@PathVariable @Min(1) Integer id) {
         log.info("-> GET: Getting Recipe with id [{}]", id);

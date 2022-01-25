@@ -50,9 +50,7 @@ public class ApiFileUpload {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<Resource> show(@PathVariable UUID uuid,
-                                         @RequestParam(value = "token") String resourceJwt) {
-        jwtUtils.verifyResourceJwt(resourceJwt);
+    public ResponseEntity<Resource> show(@PathVariable UUID uuid) {
         log.info("-> GET: Showing file with uuid [{}]", uuid);
         Map<String, Object> response = serviceFileUpload.show(uuid);
         log.info("<- GET: Resource for file [{}]", response.get("file"));
