@@ -11,29 +11,31 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DtoRecipe {
 
+    private Integer id;
     private String name;
     private String description;
     private DtoFileUpload photo;
     private Integer days;
-    private String lightType;
+    private Integer lightType;
     private Integer lightTime;
-    private String groundType;
+    private Integer groundType;
     private Integer minTemperature;
     private Integer maxTemperature;
-    private String difficulty;
+    private Integer difficulty;
     private String comment;
 
     public DtoRecipe(Recipe entity) {
+        this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
         this.photo = new DtoFileUpload(entity.getPhoto());
         this.days = entity.getAdvice().getDays();
-        this.lightType = entity.getAdvice().getLightType().getKey();
+        this.lightType = entity.getAdvice().getLightType().getId();
         this.lightTime = entity.getAdvice().getLightTime();
-        this.groundType = entity.getAdvice().getGroundType().getKey();
+        this.groundType = entity.getAdvice().getGroundType().getId();
         this.minTemperature = entity.getAdvice().getMinTemperature();
         this.maxTemperature = entity.getAdvice().getMaxTemperature();
-        this.difficulty = entity.getAdvice().getDifficulty().getKey();
+        this.difficulty = entity.getAdvice().getDifficulty().getId();
         this.comment = entity.getComment();
     }
 }

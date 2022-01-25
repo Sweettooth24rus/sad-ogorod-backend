@@ -1,5 +1,6 @@
 package com.kkoz.sadogorod.controls;
 
+import com.kkoz.sadogorod.SadOgorodApplication;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.security.CustomAuthenticationProvider;
 import com.kkoz.sadogorod.security.dto.DtoAuthCredentials;
@@ -136,4 +137,8 @@ public class ApiAuth {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/restart")
+    public void restart() {
+        SadOgorodApplication.restart();
+    }
 }

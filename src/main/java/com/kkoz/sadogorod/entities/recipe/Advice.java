@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,13 +16,13 @@ import javax.persistence.Enumerated;
 public class Advice {
 
     private Integer days;
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
     private LightType lightType;
     private Integer lightTime;
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
     private GroundType groundType;
     private Integer minTemperature;
     private Integer maxTemperature;
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
     private Difficulty difficulty;
 }
