@@ -16,9 +16,9 @@ public class ServiceTest {
     public static JsonNode mail() throws UnirestException {
         HttpResponse<JsonNode> request = Unirest.post(System.getenv("MAIL_GUN_DOMAIN") + "/messages")
                 .basicAuth("api", System.getenv("MAIL_GUN_KEY"))
-                .queryString("from", "Excited User <USER@YOURDOMAIN.COM>")
+                .queryString("from", "sad-ogorod <System@kkoz.sadogorod.com>")
                 .queryString("to", "kostya_superstar@mail.ru")
-                .queryString("subject", "hello")
+                .queryString("subject", "validation account")
                 .queryString("text", "testing")
                 .asJson();
         return request.getBody();
