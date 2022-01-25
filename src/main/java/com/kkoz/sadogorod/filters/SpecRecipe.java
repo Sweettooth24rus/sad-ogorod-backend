@@ -1,6 +1,5 @@
 package com.kkoz.sadogorod.filters;
 
-import com.kkoz.sadogorod.entities.recipe.Advice_;
 import com.kkoz.sadogorod.entities.recipe.Difficulty;
 import com.kkoz.sadogorod.entities.recipe.Recipe;
 import com.kkoz.sadogorod.entities.recipe.Recipe_;
@@ -20,7 +19,7 @@ public class SpecRecipe {
 
     public Specification<Recipe> getDifficultyFilter(Difficulty difficulty) {
         return (root, criteriaQuery, criteriaBuilder) -> (
-                criteriaBuilder.equal(root.get(Recipe_.ADVICE).get(Advice_.DIFFICULTY), difficulty
+                criteriaBuilder.equal(root.get(Recipe_.DIFFICULTY), difficulty
                 )
         );
     }

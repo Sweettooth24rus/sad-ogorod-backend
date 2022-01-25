@@ -1,13 +1,12 @@
 package com.kkoz.sadogorod.entities.recipe;
 
-import com.kkoz.sadogorod.entities.file.FileUpload;
-import com.kkoz.sadogorod.entities.meta.MetaEntityInteger;
+import com.kkoz.sadogorod.entities.meta.MetaEntityWithFiles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -16,13 +15,22 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 @Entity
-public class Recipe extends MetaEntityInteger {
+public class Recipe extends MetaEntityWithFiles {
 
     private String name;
+    @Column(columnDefinition="TEXT")
     private String description;
+
+    private Integer days;
     @ManyToOne
-    private FileUpload photo;
-    @Embedded
-    private Advice advice;
+    private LightType lightType;
+    private Integer lightTime;
+    @ManyToOne
+    private GroundType groundType;
+    private Integer minTemperature;
+    private Integer maxTemperature;
+    @ManyToOne
+    private Difficulty difficulty;
+
     private String comment;
 }

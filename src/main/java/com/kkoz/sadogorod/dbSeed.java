@@ -2,9 +2,11 @@ package com.kkoz.sadogorod;
 
 import com.kkoz.sadogorod.entities.dictionaries.Role;
 import com.kkoz.sadogorod.entities.dictionaries.TypeDocument;
+import com.kkoz.sadogorod.entities.file.FileUpload;
 import com.kkoz.sadogorod.entities.recipe.Difficulty;
 import com.kkoz.sadogorod.entities.recipe.GroundType;
 import com.kkoz.sadogorod.entities.recipe.LightType;
+import com.kkoz.sadogorod.entities.recipe.Recipe;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
 import com.kkoz.sadogorod.repositories.*;
@@ -19,8 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -35,7 +39,9 @@ public class dbSeed implements CommandLineRunner {
     private final RepoGroundType repoGroundType;
     private final RepoDifficulty repoDifficulty;
     private final RepoTypeDocument repoTypeDocument;
+    private final RepoFileUpload repoFileUpload;
     private final RepoUzer repoUzer;
+    private final RepoRecipe repoRecipe;
 
     @Override
     @Transactional
@@ -52,6 +58,7 @@ public class dbSeed implements CommandLineRunner {
         initTypeDocuments();
 
         initUser();
+        initRecipe();
 
         log.warn(" <-- Initialization ended -->");
     }
@@ -137,5 +144,37 @@ public class dbSeed implements CommandLineRunner {
 
         repoUzer.save(uzer);
 
+    }
+
+    private void initRecipe() {
+
+        Recipe recipe = new Recipe();
+
+        recipe.setName("Рецепт");
+        recipe.setDescription("йцукенгшщзхзщшгеавыячсмитьорпавымитолшгнпморлботамлруаиомриуомриуомиулмулотмлуомлруиалмабвьлыдорпнрасптьбиотдолапрлорьипнеавкспмритошргпнавекнсапмриотлошргпнаевспмриотлощршгпнаермиотльдлщшргвотлауькдлцмвщшорваотльмавдлсщваошолимвс тдшозмвмашпдтомвдмтлваоцуомв дтвшоацдуто дмстшоавдтцо отвшмоыац одтмвшотдацуо модтвшоматцоу дмтш вмшат атмодвмшватаьт мошат октошзов тма ктотмшоа ваоутьа тзоу9 тшлпомарк03ауко8ашр оимрка43мк маи мукщагшкмту о вощмуа2шолмт авомкшалм овтакошмуол мтвмуакшлмутьм аоьшзуалштср мвиуцвтлцщлвыс всгимруцодльс шоргмшавнрацилувольуащзаишрщгрвлмц бьжлацуошприщгаотдлвцьдйщлушопаилом");
+
+        recipe.setDays(50);
+        recipe.setLightType(LightType.HIGH);
+        recipe.setLightTime(54);
+        recipe.setGroundType(GroundType.BLACK_SOIL);
+        recipe.setMinTemperature(10);
+        recipe.setMaxTemperature(100);
+        recipe.setDifficulty(Difficulty.HARD);
+
+        recipe.setComment("Комментарий");
+
+        FileUpload file = new FileUpload();
+        file.setCreated(LocalDateTime.now());
+        file.setMimeType("application/pdf");
+        UUID uuid = UUID.randomUUID();
+        file.setOriginalFileName(uuid + ".jpg");
+        file.setUuid(uuid);
+        file.setSize(Integer.toUnsignedLong(1));
+        file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(1) + "/" + uuid + ".jpg");
+        file.setTypeDocument(repoTypeDocument.getById(1));
+
+        recipe.setFiles(List.of(repoFileUpload.save(file)));
+
+        repoRecipe.save(recipe);
     }
 }

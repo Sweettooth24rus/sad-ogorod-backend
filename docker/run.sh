@@ -1,0 +1,1 @@
+exec java -cp app:app/lib/* ru.cifra_k.subsidy.SubsidyMinfinN793Application

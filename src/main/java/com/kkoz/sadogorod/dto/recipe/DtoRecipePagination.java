@@ -7,16 +7,18 @@ import lombok.Data;
 @Data
 public class DtoRecipePagination {
 
+    private Integer id;
     private String name;
     private DtoFileUpload photo;
     private Integer days;
     private String difficulty;
 
     public DtoRecipePagination(Recipe entity) {
+        this.id = entity.getId();
         this.name = entity.getName();
-        this.photo = new DtoFileUpload(entity.getPhoto());
-        this.days = entity.getAdvice().getDays();
-        this.difficulty = entity.getAdvice().getDifficulty().getKey();
+        this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
+        this.days = entity.getDays();
+        this.difficulty = entity.getDifficulty().getKey();
     }
 
 }

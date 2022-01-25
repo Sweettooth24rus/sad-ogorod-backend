@@ -85,14 +85,14 @@ public class ServiceRecipe {
     private Recipe saveRecipe(Recipe recipe, DtoRecipe dtoRecipe) {
         recipe.setName(dtoRecipe.getName());
         recipe.setDescription(dtoRecipe.getDescription());
-        recipe.setPhoto(this.dtoDoc2AppFile(dtoRecipe.getPhoto(), TypeDocument.RECIPE_PHOTO));
-        recipe.getAdvice().setDays(dtoRecipe.getDays());
-        recipe.getAdvice().setLightType(repoLightType.getById(dtoRecipe.getLightType()));
-        recipe.getAdvice().setLightTime(dtoRecipe.getLightTime());
-        recipe.getAdvice().setGroundType(repoGroundType.getById(dtoRecipe.getGroundType()));
-        recipe.getAdvice().setMinTemperature(dtoRecipe.getMinTemperature());
-        recipe.getAdvice().setMaxTemperature(dtoRecipe.getMaxTemperature());
-        recipe.getAdvice().setDifficulty(repoDifficulty.getById(dtoRecipe.getDifficulty()));
+        recipe.setFiles(List.of(this.dtoDoc2AppFile(dtoRecipe.getPhoto(), TypeDocument.RECIPE_PHOTO)));
+        recipe.setDays(dtoRecipe.getDays());
+        recipe.setLightType(repoLightType.getById(dtoRecipe.getLightType()));
+        recipe.setLightTime(dtoRecipe.getLightTime());
+        recipe.setGroundType(repoGroundType.getById(dtoRecipe.getGroundType()));
+        recipe.setMinTemperature(dtoRecipe.getMinTemperature());
+        recipe.setMaxTemperature(dtoRecipe.getMaxTemperature());
+        recipe.setDifficulty(repoDifficulty.getById(dtoRecipe.getDifficulty()));
         recipe.setComment(dtoRecipe.getComment());
 
         Recipe savedRecipe;

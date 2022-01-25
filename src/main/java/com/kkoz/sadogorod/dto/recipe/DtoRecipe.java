@@ -28,14 +28,14 @@ public class DtoRecipe {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
-        this.photo = new DtoFileUpload(entity.getPhoto());
-        this.days = entity.getAdvice().getDays();
-        this.lightType = entity.getAdvice().getLightType().getId();
-        this.lightTime = entity.getAdvice().getLightTime();
-        this.groundType = entity.getAdvice().getGroundType().getId();
-        this.minTemperature = entity.getAdvice().getMinTemperature();
-        this.maxTemperature = entity.getAdvice().getMaxTemperature();
-        this.difficulty = entity.getAdvice().getDifficulty().getId();
+        this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
+        this.days = entity.getDays();
+        this.lightType = entity.getLightType().getId();
+        this.lightTime = entity.getLightTime();
+        this.groundType = entity.getGroundType().getId();
+        this.minTemperature = entity.getMinTemperature();
+        this.maxTemperature = entity.getMaxTemperature();
+        this.difficulty = entity.getDifficulty().getId();
         this.comment = entity.getComment();
     }
 }
