@@ -56,7 +56,7 @@ public class DtoUzerUpdate {
     public DtoUzerUpdate(DtoUzer dtoUzer) {
         this.id = dtoUzer.getId();
         this.username = dtoUzer.getUsername();
-        this.password = "";
+        this.password = dtoUzer.getPassword();
         this.lastName = dtoUzer.getLastName();
         this.firstName = dtoUzer.getFirstName();
         this.patronymicName = dtoUzer.getPatronymicName();

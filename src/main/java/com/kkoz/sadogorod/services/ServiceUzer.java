@@ -7,10 +7,16 @@ import com.kkoz.sadogorod.dto.uzer.DtoUzer;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerPagination;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerUpdate;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
+import com.kkoz.sadogorod.entities.uzer.UzerMail;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
 import com.kkoz.sadogorod.filters.SpecUzer;
 import com.kkoz.sadogorod.repositories.RepoUzer;
+import com.kkoz.sadogorod.repositories.RepoUzerMail;
 import com.kkoz.sadogorod.security.dto.DtoAuthCredentials;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +43,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ServiceUzer implements UserDetailsService {
 
+    private final RepoUzerMail repoUzerMail;
     private final RepoUzer repoUzer;
     private final SpecUzer specUzer;
     private final PasswordEncoder passwordEncoder;
@@ -185,4 +192,40 @@ public class ServiceUzer implements UserDetailsService {
         return repoUzer.existsByUsername(username);
     }
 
+    public boolean checkActive(String username) {
+        return repoUzerMail.getByUsername(username).get().getActive();
+    }
+
+    public JsonNode mail(DtoUzer uzer) throws UnirestException {
+        UzerMail uzerMail = new UzerMail();
+        uzerMail.setUsername(uzer.getUsername());
+        uzerMail.setActive(false);
+        uzerMail.setKey(repoUzerMail.createApplicationNumber());
+        repoUzerMail.save(uzerMail);
+        String text;
+        text = "Здравствуй. Необходимо подтвердить аккаунт. " +
+                "Для этого необходимо перейти по ссылке:\n " +
+                "http://localhost:8080/api/user/activity/"
+                + uzerMail.getUsername() + "/" + uzerMail.getKey() ;
+        HttpResponse<JsonNode> request = Unirest.post(System.getenv("MAIL_GUN_DOMAIN") + "/messages")
+                .basicAuth("api", System.getenv("MAIL_GUN_KEY"))
+                .queryString("from", "sad-ogorod <System@kkoz.sadogorod.com>")
+                .queryString("to", "kostya_superstar@mail.ru")
+                .queryString("subject", "Подтверждение аккаунта")
+                .queryString("text", text)
+                .asJson();
+        return request.getBody();
+    }
+
+    public void updateUzerMailActivity(String username, Integer key) throws LoginException {
+        UzerMail uzerMail = repoUzerMail.getByUsername(username).orElseThrow(
+                () -> new NotFoundException(username, UzerMail.class.getSimpleName())
+        );
+
+        if (!uzerMail.getKey().equals(key)) {
+            throw new LoginException("Логин и ключ не соотносятся");
+        }
+
+        uzerMail.setActive(true);
+    }
 }
