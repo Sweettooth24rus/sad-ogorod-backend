@@ -34,100 +34,101 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/pickle")
-public class ApiPickle {
+@RequestMapping("/api/garden")
+public class ApiGarden {
 
-    ServicePickle servicePickle;
+    ServiceGarden serviceGarden;
 
     @GetMapping("/all")
-    public Page<DtoPicklePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public Page<DtoGardenPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
-        Page<DtoPicklePagination> picklePage = servicePickle.getPage(page, size, sort);
-        return picklePage;
+        Page<DtoGardenPagination> gardenPage = serviceGarden.getPage(page, size, sort);
+        return gardenPage;
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String, String>> create(@RequestBody DtoPickle pickle) {
-        Pickle createdPickle = servicePickle.create(pickle);
+    public ResponseEntity<Map<String, String>> create(@RequestBody DtoGarden garden) {
+        Garden createdGarden = serviceGarden.create(garden);
         Map<String, String> response = new HashMap<>();
-        response.put("id", createdPickle.getId().toString());
-        response.put("response", " created with id [" + createdPickle.getId() + "]");
+        response.put("id", createdGarden.getId().toString());
+        response.put("response", " created with id [" + createdGarden.getId() + "]");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoPickle get(@PathVariable @Min(1) Integer id) {
-        DtoPickle dtoPickle = new DtoPickle(servicePickle.getById(id));
-        return dtoPickle;
+    public DtoGarden get(@PathVariable @Min(1) Integer id) {
+        DtoGarden dtoGarden = new DtoGarden(serviceGarden.getById(id));
+        return dtoGarden;
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
-                                                      @RequestBody DtoPickle pickle) {
-        Pickle updatedPickle = servicePickle.update(id, pickle);
+                                                      @RequestBody DtoGarden garden) {
+        Garden updatedGarden = serviceGarden.update(id, garden);
         Map<String, String> response = new HashMap<>();
-        response.put("response", " [" + updatedPickle.getId() + "] was updated");
+        response.put("response", " [" + updatedGarden.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
 }
 
 @Service
 @RequiredArgsConstructor
-class ServicePickle {
+class ServiceGarden {
 
-    private final RepoPickle repoPickle;
+    private final RepoGarden repoGarden;
     private final ServicePageable servicePageable;
 
-    public Page<DtoPicklePagination> getPage(Integer page, Integer size, String sort) {
+    public Page<DtoGardenPagination> getPage(Integer page, Integer size, String sort) {
         Pageable pageConfig = servicePageable.getPageConfig(page, size, sort);
 
-        Page<Pickle> picklePage = repoPickle.findAll(pageConfig);
+        Page<Garden> gardenPage = repoGarden.findAll(pageConfig);
 
-        List<DtoPicklePagination> dtoPicklePagination = picklePage.stream()
-                .map(DtoPicklePagination::new)
+        List<DtoGardenPagination> dtoGardenPagination = gardenPage.stream()
+                .map(DtoGardenPagination::new)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(dtoPicklePagination, pageConfig, picklePage.getTotalElements());
+        return new PageImpl<>(dtoGardenPagination, pageConfig, gardenPage.getTotalElements());
     }
 
-    public Pickle getById(Integer id) {
-        return repoPickle.getById(id);
+    public Garden getById(Integer id) {
+        return repoGarden.getById(id);
     }
 
-    public Pickle create(DtoPickle dtoPickle) {
-        Pickle pickle = new Pickle();
-        return this.save(pickle, dtoPickle);
+    public Garden create(DtoGarden dtoGarden) {
+        Garden garden = new Garden();
+        return this.save(garden, dtoGarden);
     }
 
-    public Pickle update(Integer id, DtoPickle dtoPickle) {
-        if (!id.equals(dtoPickle.getId())) {
+    public Garden update(Integer id, DtoGarden dtoGarden) {
+        if (!id.equals(dtoGarden.getId())) {
             throw new MismatchException(
-                    "Provided id [" + id + "] isn't equal to provided DTO id [" + dtoPickle.getId() + "]"
+                    "Provided id [" + id + "] isn't equal to provided DTO id [" + dtoGarden.getId() + "]"
             );
         }
 
-        Pickle pickle = repoPickle.getById(id);
+        Garden garden = repoGarden.getById(id);
 
-        return this.save(pickle, dtoPickle);
+        return this.save(garden, dtoGarden);
     }
 
-    private Pickle save(Pickle pickle, DtoPickle dtoPickle) {
-        pickle.setName(dtoPickle.getName());
-        pickle.setDescription(dtoPickle.getDescription());
-        pickle.setFiles(List.of(this.dtoDoc2AppFile(dtoPickle.getPhoto(), TypeDocument.PICKLE_PHOTO)));
+    private Garden save(Garden garden, DtoGarden dtoGarden) {
+        garden.setName(dtoGarden.getName());
+        garden.setDescription(dtoGarden.getDescription());
+        garden.setFiles(List.of(this.dtoDoc2AppFile(dtoGarden.getPhoto(), TypeDocument.GARDEN_PHOTO)));
+        garden.setSquare(dtoGarden.getSquare());
 
-        Pickle savedPickle;
+        Garden savedGarden;
 
         try {
-            savedPickle = repoPickle.save(pickle);
+            savedGarden = repoGarden.save(garden);
         } catch (DataIntegrityViolationException e) {
             ConstraintViolationException constraintViolation = (ConstraintViolationException) e.getCause();
             throw new UniqueUzerException(constraintViolation.getConstraintName());
         }
 
-        return savedPickle;
+        return savedGarden;
     }
 
     private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
@@ -151,47 +152,52 @@ class ServicePickle {
 @Getter
 @Setter
 @Entity
-class Pickle extends MetaEntityWithFiles {
+class Garden extends MetaEntityWithFiles {
 
     private String name;
     @Column(columnDefinition="TEXT")
     private String description;
+    private String square;
 }
 
 @Repository
-interface RepoPickle extends JpaRepository<Pickle, Integer> {
+interface RepoGarden extends JpaRepository<Garden, Integer> {
 
 }
 
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-class DtoPickle {
+class DtoGarden {
 
     private Integer id;
     private String name;
     private String description;
     private DtoFileUpload photo;
+    private String square;
 
-    public DtoPickle(Pickle entity) {
+    public DtoGarden(Garden entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
+        this.square = entity.getSquare();
     }
 }
 
 @Data
-class DtoPicklePagination {
+class DtoGardenPagination {
 
     private Integer id;
     private String name;
     private DtoFileUpload photo;
+    private String square;
 
-    public DtoPicklePagination(Pickle entity) {
+    public DtoGardenPagination(Garden entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
+        this.square = entity.getSquare();
     }
 
 }

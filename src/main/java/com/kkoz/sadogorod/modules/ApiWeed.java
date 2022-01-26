@@ -34,100 +34,101 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/pickle")
-public class ApiPickle {
+@RequestMapping("/api/weed")
+public class ApiWeed {
 
-    ServicePickle servicePickle;
+    ServiceWeed serviceWeed;
 
     @GetMapping("/all")
-    public Page<DtoPicklePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public Page<DtoWeedPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
-        Page<DtoPicklePagination> picklePage = servicePickle.getPage(page, size, sort);
-        return picklePage;
+        Page<DtoWeedPagination> weedPage = serviceWeed.getPage(page, size, sort);
+        return weedPage;
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String, String>> create(@RequestBody DtoPickle pickle) {
-        Pickle createdPickle = servicePickle.create(pickle);
+    public ResponseEntity<Map<String, String>> create(@RequestBody DtoWeed weed) {
+        Weed createdWeed = serviceWeed.create(weed);
         Map<String, String> response = new HashMap<>();
-        response.put("id", createdPickle.getId().toString());
-        response.put("response", " created with id [" + createdPickle.getId() + "]");
+        response.put("id", createdWeed.getId().toString());
+        response.put("response", " created with id [" + createdWeed.getId() + "]");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoPickle get(@PathVariable @Min(1) Integer id) {
-        DtoPickle dtoPickle = new DtoPickle(servicePickle.getById(id));
-        return dtoPickle;
+    public DtoWeed get(@PathVariable @Min(1) Integer id) {
+        DtoWeed dtoWeed = new DtoWeed(serviceWeed.getById(id));
+        return dtoWeed;
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
-                                                      @RequestBody DtoPickle pickle) {
-        Pickle updatedPickle = servicePickle.update(id, pickle);
+                                                      @RequestBody DtoWeed weed) {
+        Weed updatedWeed = serviceWeed.update(id, weed);
         Map<String, String> response = new HashMap<>();
-        response.put("response", " [" + updatedPickle.getId() + "] was updated");
+        response.put("response", " [" + updatedWeed.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
 }
 
 @Service
 @RequiredArgsConstructor
-class ServicePickle {
+class ServiceWeed {
 
-    private final RepoPickle repoPickle;
+    private final RepoWeed repoWeed;
     private final ServicePageable servicePageable;
 
-    public Page<DtoPicklePagination> getPage(Integer page, Integer size, String sort) {
+    public Page<DtoWeedPagination> getPage(Integer page, Integer size, String sort) {
         Pageable pageConfig = servicePageable.getPageConfig(page, size, sort);
 
-        Page<Pickle> picklePage = repoPickle.findAll(pageConfig);
+        Page<Weed> weedPage = repoWeed.findAll(pageConfig);
 
-        List<DtoPicklePagination> dtoPicklePagination = picklePage.stream()
-                .map(DtoPicklePagination::new)
+        List<DtoWeedPagination> dtoWeedPagination = weedPage.stream()
+                .map(DtoWeedPagination::new)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(dtoPicklePagination, pageConfig, picklePage.getTotalElements());
+        return new PageImpl<>(dtoWeedPagination, pageConfig, weedPage.getTotalElements());
     }
 
-    public Pickle getById(Integer id) {
-        return repoPickle.getById(id);
+    public Weed getById(Integer id) {
+        return repoWeed.getById(id);
     }
 
-    public Pickle create(DtoPickle dtoPickle) {
-        Pickle pickle = new Pickle();
-        return this.save(pickle, dtoPickle);
+    public Weed create(DtoWeed dtoWeed) {
+        Weed weed = new Weed();
+        return this.save(weed, dtoWeed);
     }
 
-    public Pickle update(Integer id, DtoPickle dtoPickle) {
-        if (!id.equals(dtoPickle.getId())) {
+    public Weed update(Integer id, DtoWeed dtoWeed) {
+        if (!id.equals(dtoWeed.getId())) {
             throw new MismatchException(
-                    "Provided id [" + id + "] isn't equal to provided DTO id [" + dtoPickle.getId() + "]"
+                    "Provided id [" + id + "] isn't equal to provided DTO id [" + dtoWeed.getId() + "]"
             );
         }
 
-        Pickle pickle = repoPickle.getById(id);
+        Weed weed = repoWeed.getById(id);
 
-        return this.save(pickle, dtoPickle);
+        return this.save(weed, dtoWeed);
     }
 
-    private Pickle save(Pickle pickle, DtoPickle dtoPickle) {
-        pickle.setName(dtoPickle.getName());
-        pickle.setDescription(dtoPickle.getDescription());
-        pickle.setFiles(List.of(this.dtoDoc2AppFile(dtoPickle.getPhoto(), TypeDocument.PICKLE_PHOTO)));
+    private Weed save(Weed weed, DtoWeed dtoWeed) {
+        weed.setName(dtoWeed.getName());
+        weed.setDescription(dtoWeed.getDescription());
+        weed.setFiles(List.of(this.dtoDoc2AppFile(dtoWeed.getPhoto(), TypeDocument.WEED_PHOTO)));
+        weed.setRegion(dtoWeed.getRegion());
 
-        Pickle savedPickle;
+        Weed savedWeed;
 
         try {
-            savedPickle = repoPickle.save(pickle);
+            savedWeed = repoWeed.save(weed);
         } catch (DataIntegrityViolationException e) {
             ConstraintViolationException constraintViolation = (ConstraintViolationException) e.getCause();
             throw new UniqueUzerException(constraintViolation.getConstraintName());
         }
 
-        return savedPickle;
+        return savedWeed;
     }
 
     private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
@@ -151,44 +152,47 @@ class ServicePickle {
 @Getter
 @Setter
 @Entity
-class Pickle extends MetaEntityWithFiles {
+class Weed extends MetaEntityWithFiles {
 
     private String name;
     @Column(columnDefinition="TEXT")
     private String description;
+    private String region;
 }
 
 @Repository
-interface RepoPickle extends JpaRepository<Pickle, Integer> {
+interface RepoWeed extends JpaRepository<Weed, Integer> {
 
 }
 
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-class DtoPickle {
+class DtoWeed {
 
     private Integer id;
     private String name;
     private String description;
     private DtoFileUpload photo;
+    private String region;
 
-    public DtoPickle(Pickle entity) {
+    public DtoWeed(Weed entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
+        this.region = entity.getRegion();
     }
 }
 
 @Data
-class DtoPicklePagination {
+class DtoWeedPagination {
 
     private Integer id;
     private String name;
     private DtoFileUpload photo;
 
-    public DtoPicklePagination(Pickle entity) {
+    public DtoWeedPagination(Weed entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());

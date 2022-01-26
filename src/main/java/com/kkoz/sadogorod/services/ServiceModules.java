@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -56,9 +56,9 @@ public class ServiceModules {
         List<Modules> newModules = new ArrayList<>();
         File directory = new File("E:\\sad-ogorod-backend\\src\\main\\java\\com\\kkoz\\sadogorod\\modules");
 
-        MyFilenameFilter filter = new MyFilenameFilter("file.cpp");
-
-        newModules.addAll(Arrays.stream(directory.list(filter)).map(Modules::new).collect(Collectors.toList()));
+        for (final File fileEntry : Objects.requireNonNull(directory.listFiles())) {
+            newModules.add(new Modules(fileEntry.getName()));
+        }
 
         for (Modules module:
              newModules) {

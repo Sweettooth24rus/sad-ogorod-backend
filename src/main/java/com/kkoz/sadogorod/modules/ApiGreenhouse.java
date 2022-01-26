@@ -34,100 +34,101 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/pickle")
-public class ApiPickle {
+@RequestMapping("/api/greenhouse")
+public class ApiGreenhouse {
 
-    ServicePickle servicePickle;
+    ServiceGreenhouse serviceGreenhouse;
 
     @GetMapping("/all")
-    public Page<DtoPicklePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public Page<DtoGreenhousePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
-        Page<DtoPicklePagination> picklePage = servicePickle.getPage(page, size, sort);
-        return picklePage;
+        Page<DtoGreenhousePagination> greenhousePage = serviceGreenhouse.getPage(page, size, sort);
+        return greenhousePage;
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String, String>> create(@RequestBody DtoPickle pickle) {
-        Pickle createdPickle = servicePickle.create(pickle);
+    public ResponseEntity<Map<String, String>> create(@RequestBody DtoGreenhouse greenhouse) {
+        Greenhouse createdGreenhouse = serviceGreenhouse.create(greenhouse);
         Map<String, String> response = new HashMap<>();
-        response.put("id", createdPickle.getId().toString());
-        response.put("response", " created with id [" + createdPickle.getId() + "]");
+        response.put("id", createdGreenhouse.getId().toString());
+        response.put("response", " created with id [" + createdGreenhouse.getId() + "]");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoPickle get(@PathVariable @Min(1) Integer id) {
-        DtoPickle dtoPickle = new DtoPickle(servicePickle.getById(id));
-        return dtoPickle;
+    public DtoGreenhouse get(@PathVariable @Min(1) Integer id) {
+        DtoGreenhouse dtoGreenhouse = new DtoGreenhouse(serviceGreenhouse.getById(id));
+        return dtoGreenhouse;
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
-                                                      @RequestBody DtoPickle pickle) {
-        Pickle updatedPickle = servicePickle.update(id, pickle);
+                                                      @RequestBody DtoGreenhouse greenhouse) {
+        Greenhouse updatedGreenhouse = serviceGreenhouse.update(id, greenhouse);
         Map<String, String> response = new HashMap<>();
-        response.put("response", " [" + updatedPickle.getId() + "] was updated");
+        response.put("response", " [" + updatedGreenhouse.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
 }
 
 @Service
 @RequiredArgsConstructor
-class ServicePickle {
+class ServiceGreenhouse {
 
-    private final RepoPickle repoPickle;
+    private final RepoGreenhouse repoGreenhouse;
     private final ServicePageable servicePageable;
 
-    public Page<DtoPicklePagination> getPage(Integer page, Integer size, String sort) {
+    public Page<DtoGreenhousePagination> getPage(Integer page, Integer size, String sort) {
         Pageable pageConfig = servicePageable.getPageConfig(page, size, sort);
 
-        Page<Pickle> picklePage = repoPickle.findAll(pageConfig);
+        Page<Greenhouse> greenhousePage = repoGreenhouse.findAll(pageConfig);
 
-        List<DtoPicklePagination> dtoPicklePagination = picklePage.stream()
-                .map(DtoPicklePagination::new)
+        List<DtoGreenhousePagination> dtoGreenhousePagination = greenhousePage.stream()
+                .map(DtoGreenhousePagination::new)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(dtoPicklePagination, pageConfig, picklePage.getTotalElements());
+        return new PageImpl<>(dtoGreenhousePagination, pageConfig, greenhousePage.getTotalElements());
     }
 
-    public Pickle getById(Integer id) {
-        return repoPickle.getById(id);
+    public Greenhouse getById(Integer id) {
+        return repoGreenhouse.getById(id);
     }
 
-    public Pickle create(DtoPickle dtoPickle) {
-        Pickle pickle = new Pickle();
-        return this.save(pickle, dtoPickle);
+    public Greenhouse create(DtoGreenhouse dtoGreenhouse) {
+        Greenhouse greenhouse = new Greenhouse();
+        return this.save(greenhouse, dtoGreenhouse);
     }
 
-    public Pickle update(Integer id, DtoPickle dtoPickle) {
-        if (!id.equals(dtoPickle.getId())) {
+    public Greenhouse update(Integer id, DtoGreenhouse dtoGreenhouse) {
+        if (!id.equals(dtoGreenhouse.getId())) {
             throw new MismatchException(
-                    "Provided id [" + id + "] isn't equal to provided DTO id [" + dtoPickle.getId() + "]"
+                    "Provided id [" + id + "] isn't equal to provided DTO id [" + dtoGreenhouse.getId() + "]"
             );
         }
 
-        Pickle pickle = repoPickle.getById(id);
+        Greenhouse greenhouse = repoGreenhouse.getById(id);
 
-        return this.save(pickle, dtoPickle);
+        return this.save(greenhouse, dtoGreenhouse);
     }
 
-    private Pickle save(Pickle pickle, DtoPickle dtoPickle) {
-        pickle.setName(dtoPickle.getName());
-        pickle.setDescription(dtoPickle.getDescription());
-        pickle.setFiles(List.of(this.dtoDoc2AppFile(dtoPickle.getPhoto(), TypeDocument.PICKLE_PHOTO)));
+    private Greenhouse save(Greenhouse greenhouse, DtoGreenhouse dtoGreenhouse) {
+        greenhouse.setName(dtoGreenhouse.getName());
+        greenhouse.setDescription(dtoGreenhouse.getDescription());
+        greenhouse.setFiles(List.of(this.dtoDoc2AppFile(dtoGreenhouse.getPhoto(), TypeDocument.GREENHOUSE_PHOTO)));
+        greenhouse.setMaterials(dtoGreenhouse.getMaterials());
 
-        Pickle savedPickle;
+        Greenhouse savedGreenhouse;
 
         try {
-            savedPickle = repoPickle.save(pickle);
+            savedGreenhouse = repoGreenhouse.save(greenhouse);
         } catch (DataIntegrityViolationException e) {
             ConstraintViolationException constraintViolation = (ConstraintViolationException) e.getCause();
             throw new UniqueUzerException(constraintViolation.getConstraintName());
         }
 
-        return savedPickle;
+        return savedGreenhouse;
     }
 
     private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
@@ -151,44 +152,47 @@ class ServicePickle {
 @Getter
 @Setter
 @Entity
-class Pickle extends MetaEntityWithFiles {
+class Greenhouse extends MetaEntityWithFiles {
 
     private String name;
     @Column(columnDefinition="TEXT")
     private String description;
+    private String materials;
 }
 
 @Repository
-interface RepoPickle extends JpaRepository<Pickle, Integer> {
+interface RepoGreenhouse extends JpaRepository<Greenhouse, Integer> {
 
 }
 
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-class DtoPickle {
+class DtoGreenhouse {
 
     private Integer id;
     private String name;
     private String description;
     private DtoFileUpload photo;
+    private String materials;
 
-    public DtoPickle(Pickle entity) {
+    public DtoGreenhouse(Greenhouse entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
+        this.materials = entity.getMaterials();
     }
 }
 
 @Data
-class DtoPicklePagination {
+class DtoGreenhousePagination {
 
     private Integer id;
     private String name;
     private DtoFileUpload photo;
 
-    public DtoPicklePagination(Pickle entity) {
+    public DtoGreenhousePagination(Greenhouse entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());

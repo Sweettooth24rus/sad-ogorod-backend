@@ -141,7 +141,7 @@ public class ApiUzer {
         response.put("id", createdUzer.getId().toString());
         response.put("response", "User created with id [" + createdUzer.getId() + "]");
         log.info("<- POST: User created with id [{}]", createdUzer.getId());
-        serviceUzer.mail(uzer);
+        response.put("mail", serviceUzer.mail(uzer).toString());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

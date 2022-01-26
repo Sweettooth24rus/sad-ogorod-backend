@@ -22,6 +22,7 @@ public class TypeDocument extends EntityDictionary implements Serializable {
     public static final TypeDocument TEA_PHOTO = new TypeDocument(3, "TEA_PHOTO", "Фотография в чаях");
     public static final TypeDocument GARDEN_PHOTO = new TypeDocument(4, "GARDEN_PHOTO", "Фотография в огородах");
     public static final TypeDocument WEED_PHOTO = new TypeDocument(5, "WEED_PHOTO", "Фотография в сорняках");
+    public static final TypeDocument GREENHOUSE_PHOTO = new TypeDocument(6, "GREENHOUSE_PHOTO", "Фотография в теплицах");
 
     @Id
     @JsonIgnore

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/teas")
+@RequestMapping("/api/tea")
 public class ApiTea {
 
     ServiceTea serviceTea;
@@ -191,13 +191,11 @@ class DtoTeaPagination {
     private Integer id;
     private String name;
     private DtoFileUpload photo;
-    private Integer time;
 
     public DtoTeaPagination(Tea entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
-        this.time = entity.getTime();
     }
 
 }

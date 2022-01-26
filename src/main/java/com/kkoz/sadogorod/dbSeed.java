@@ -117,7 +117,8 @@ public class dbSeed implements CommandLineRunner {
                 TypeDocument.PICKLE_PHOTO,
                 TypeDocument.TEA_PHOTO,
                 TypeDocument.GARDEN_PHOTO,
-                TypeDocument.WEED_PHOTO
+                TypeDocument.WEED_PHOTO,
+                TypeDocument.GREENHOUSE_PHOTO
         );
         repoTypeDocument.saveAll(typeDocumentList);
     }
