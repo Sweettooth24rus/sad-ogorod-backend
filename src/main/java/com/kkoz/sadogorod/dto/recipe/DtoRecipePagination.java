@@ -18,7 +18,7 @@ public class DtoRecipePagination {
         this.name = entity.getName();
         this.photo = new DtoFileUpload(entity.getFiles().stream().findFirst().get());
         this.days = entity.getDays();
-        this.difficulty = entity.getDifficulty().getKey();
+        this.difficulty = entity.getDifficulty().getValue();
     }
 
 }

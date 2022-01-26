@@ -3,6 +3,7 @@ package com.kkoz.sadogorod.controls;
 
 import com.kkoz.sadogorod.dto.recipe.DtoRecipe;
 import com.kkoz.sadogorod.dto.recipe.DtoRecipePagination;
+import com.kkoz.sadogorod.dto.recipe.DtoRecipeShow;
 import com.kkoz.sadogorod.entities.recipe.Recipe;
 import com.kkoz.sadogorod.services.ServiceRecipe;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +54,9 @@ public class ApiRecipe {
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoRecipe getRecipe(@PathVariable @Min(1) Integer id) {
+    public DtoRecipeShow getRecipe(@PathVariable @Min(1) Integer id) {
         log.info("-> GET: Getting Recipe with id [{}]", id);
-        DtoRecipe dtoRecipe = new DtoRecipe(serviceRecipe.getById(id));
+        DtoRecipeShow dtoRecipe = new DtoRecipeShow(serviceRecipe.getById(id));
         log.info("<- GET: Got Recipe with id [{}]: {}", dtoRecipe.getId(), dtoRecipe);
         return dtoRecipe;
     }
