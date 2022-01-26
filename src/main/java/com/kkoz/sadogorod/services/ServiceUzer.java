@@ -163,8 +163,8 @@ public class ServiceUzer implements UserDetailsService {
         uzer.setPatronymicName(dtoUzer.getPatronymicName());
         uzer.setEmail(dtoUzer.getEmail());
         uzer.setPhone(dtoUzer.getPhone());
-        uzer.setRole(UzerRole.getRoleFromKey(dtoUzer.getRole()));
-        uzer.setIsActive(dtoUzer.getIsActive());
+        uzer.setRole(UzerRole.ORDINARY);
+        uzer.setIsActive(true);
 
         Uzer savedUzer;
 

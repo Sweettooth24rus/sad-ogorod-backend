@@ -149,7 +149,7 @@ public class ApiUzer {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String, String>> createUzer(@Valid @RequestBody DtoUzer uzer) throws UnirestException {
+    public ResponseEntity<Map<String, String>> createUzer(@RequestBody DtoUzer uzer) throws UnirestException {
         log.info("-> POST: Adding new user: {}", uzer);
         Uzer createdUzer = serviceUzer.createUzer(uzer);
         Map<String, String> response = new HashMap<>();

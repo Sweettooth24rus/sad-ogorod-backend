@@ -32,6 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 /data/
-/src/main/java/com/kkoz/sadogorod/modules/
 src/main/java/com/kkoz/sadogorod/dbConfig.java
 /app/
