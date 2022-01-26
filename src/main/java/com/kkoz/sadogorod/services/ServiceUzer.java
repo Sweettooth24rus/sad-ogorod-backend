@@ -195,7 +195,7 @@ public class ServiceUzer {
         String text;
         text = "Здравствуй. Необходимо подтвердить аккаунт. " +
                 "Для этого необходимо перейти по ссылке:\n " +
-                "http://localhost:8080/api/user/activity/"
+                "https://sad-ogorod.herokuapp.com/api/user/activity/"
                 + uzerMail.getUsername() + "/" + uzerMail.getId() ;
         HttpResponse<JsonNode> request = Unirest.post(System.getenv("MAIL_GUN_DOMAIN") + "/messages")
                 .basicAuth("api", System.getenv("MAIL_GUN_KEY"))
