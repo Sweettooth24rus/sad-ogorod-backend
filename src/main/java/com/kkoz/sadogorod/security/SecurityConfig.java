@@ -50,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors()
+        //http
+                //.cors()
                 //.csrf().disable()
                 //.exceptionHandling()
                 //.authenticationEntryPoint(this.authEntryPoint)
@@ -85,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.anyRequest()
                 //.authenticated()
                 //.accessDecisionManager(this.accessDecisionManager())
-        ;
+        //;
     }
 
     @Bean
