@@ -113,7 +113,11 @@ public class dbSeed implements CommandLineRunner {
 
     private void initTypeDocuments() {
         List<TypeDocument> typeDocumentList = Arrays.asList(
-                TypeDocument.RECIPE_PHOTO
+                TypeDocument.RECIPE_PHOTO,
+                TypeDocument.PICKLE_PHOTO,
+                TypeDocument.TEA_PHOTO,
+                TypeDocument.GARDEN_PHOTO,
+                TypeDocument.WEED_PHOTO
         );
         repoTypeDocument.saveAll(typeDocumentList);
     }
