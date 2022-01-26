@@ -222,5 +222,6 @@ public class ServiceUzer {
         }
 
         uzerMail.setActive(true);
+        repoUzerMail.save(uzerMail);
     }
 }
