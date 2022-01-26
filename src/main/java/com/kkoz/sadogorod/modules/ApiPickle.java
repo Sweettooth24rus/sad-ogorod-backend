@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ApiPickle {
 
     public static Boolean active = true;
-    ServicePickle servicePickle;
+    private final ServicePickle servicePickle;
 
     @GetMapping("/all")
     public ResponseEntity<Page<DtoPicklePagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ApiGreenhouse {
 
     public static Boolean active = true;
-    ServiceGreenhouse serviceGreenhouse;
+    private final ServiceGreenhouse serviceGreenhouse;
 
     @GetMapping("/all")
     public ResponseEntity<Page<DtoGreenhousePagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,

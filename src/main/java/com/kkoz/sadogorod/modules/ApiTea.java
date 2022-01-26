@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ApiTea {
 
     public static Boolean active = true;
-    ServiceTea serviceTea;
+    private final ServiceTea serviceTea;
 
     @GetMapping("/all")
     public ResponseEntity<Page<DtoTeaPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,

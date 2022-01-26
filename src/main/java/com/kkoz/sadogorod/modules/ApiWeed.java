@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ApiWeed {
 
     public static Boolean active = true;
-    ServiceWeed serviceWeed;
+    private final ServiceWeed serviceWeed;
 
     @GetMapping("/all")
     public ResponseEntity<Page<DtoWeedPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,

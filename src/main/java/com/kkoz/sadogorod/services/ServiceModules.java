@@ -52,8 +52,7 @@ public class ServiceModules {
 
         for (final File fileEntry : Objects.requireNonNull(directory.listFiles())) {
             if (fileEntry.getName().equals(modules.getName())) {
-                Runtime.getRuntime().exec("com.kkoz.sadogorod.modules." + modules.getName() + ".changeActivity();");
-                Runtime.getRuntime().exec("com.kkoz.sadogorod.modules." + modules.getName() + ".active");
+                Runtime.getRuntime().exec("com.kkoz.sadogorod.modules." + modules.getName() + ".active = " + modules.getActivity());
             }
         }
 

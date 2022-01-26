@@ -48,14 +48,14 @@ public class dbSeed implements CommandLineRunner {
 
         createStorage();
 
-        initRoles();
+        /*initRoles();
         initLightType();
         initGroungType();
         initDifficulty();
         initTypeDocuments();
 
         initUser();
-        initRecipe();
+        initRecipe();*/
 
         log.warn(" <-- Initialization ended -->");
     }

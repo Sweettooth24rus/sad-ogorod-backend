@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ApiGarden {
 
     public static Boolean active = true;
-    ServiceGarden serviceGarden;
+    private final ServiceGarden serviceGarden;
 
     public static void changeActivity() {
         active = !active;
