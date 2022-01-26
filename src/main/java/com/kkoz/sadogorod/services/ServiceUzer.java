@@ -205,7 +205,7 @@ public class ServiceUzer {
         HttpResponse<JsonNode> request = Unirest.post(System.getenv("MAIL_GUN_DOMAIN") + "/messages")
                 .basicAuth("api", System.getenv("MAIL_GUN_KEY"))
                 .queryString("from", "sad-ogorod <System@kkoz.sadogorod.com>")
-                .queryString("to", "kostya_superstar@mail.ru")
+                .queryString("to", uzer.getEmail())
                 .queryString("subject", "Подтверждение аккаунта")
                 .queryString("text", text)
                 .asJson();
