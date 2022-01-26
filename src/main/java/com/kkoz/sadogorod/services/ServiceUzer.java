@@ -41,6 +41,7 @@ public class ServiceUzer {
     private final RepoUzer repoUzer;
     private final SpecUzer specUzer;
     private final ServicePageable servicePageable;
+    private static Uzer currentUzer;
 
     @SneakyThrows
     public Uzer loadUserByUsername(String username) {
@@ -61,7 +62,9 @@ public class ServiceUzer {
     public Uzer getByCredentials(DtoUzerCredentials credentials) {
         String encodedPassword = this.getByUsername(credentials.getUsername()).getPassword();
         if (credentials.getPassword().equals(encodedPassword)) {
-            return repoUzer.getByUsername(credentials.getUsername()).get();
+            Uzer tmp = repoUzer.getByUsername(credentials.getUsername()).get();
+            currentUzer = tmp;
+            return tmp;
         }
         else {
             throw new NotFoundException("Неправильно указан логин или пароль");
@@ -69,8 +72,7 @@ public class ServiceUzer {
     }
 
     public Uzer getCurrentUzer() {
-        return new Uzer();
-        //return this.getById(Integer.parseInt(username.substring(username.lastIndexOf("@") + 1)));
+        return currentUzer;
     }
 
     public Page<DtoUzerPagination> getPage(Integer page, Integer size, String sort, String username,
@@ -123,6 +125,9 @@ public class ServiceUzer {
     }
 
     public Uzer createUzer(DtoUzer dtoUzer) {
+        if (repoUzer.existsByUsername(dtoUzer.getUsername())) {
+            return null;
+        }
         Uzer uzer = new Uzer();
         return this.saveUzer(uzer, new DtoUzerUpdate(dtoUzer));
     }
