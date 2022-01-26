@@ -200,13 +200,12 @@ public class ServiceUzer implements UserDetailsService {
         UzerMail uzerMail = new UzerMail();
         uzerMail.setUsername(uzer.getUsername());
         uzerMail.setActive(false);
-        uzerMail.setKey(repoUzerMail.createApplicationNumber());
         repoUzerMail.save(uzerMail);
         String text;
         text = "Здравствуй. Необходимо подтвердить аккаунт. " +
                 "Для этого необходимо перейти по ссылке:\n " +
                 "http://localhost:8080/api/user/activity/"
-                + uzerMail.getUsername() + "/" + uzerMail.getKey() ;
+                + uzerMail.getUsername() + "/" + uzerMail.getId() ;
         HttpResponse<JsonNode> request = Unirest.post(System.getenv("MAIL_GUN_DOMAIN") + "/messages")
                 .basicAuth("api", System.getenv("MAIL_GUN_KEY"))
                 .queryString("from", "sad-ogorod <System@kkoz.sadogorod.com>")
@@ -222,7 +221,7 @@ public class ServiceUzer implements UserDetailsService {
                 () -> new NotFoundException(username, UzerMail.class.getSimpleName())
         );
 
-        if (!uzerMail.getKey().equals(key)) {
+        if (!uzerMail.getId().equals(key)) {
             throw new LoginException("Логин и ключ не соотносятся");
         }
 

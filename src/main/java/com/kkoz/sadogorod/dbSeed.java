@@ -15,7 +15,6 @@ import com.kkoz.sadogorod.security.jwt.secret_key.ServiceJwtSecretKey;
 import com.kkoz.sadogorod.utils.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -35,9 +32,6 @@ import java.util.UUID;
 @Profile("default")
 @RequiredArgsConstructor
 public class dbSeed implements CommandLineRunner {
-
-    @PersistenceContext
-    private final EntityManager em;
 
     private final FileStorageUtil fileStorage;
     private final ServiceJwtSecretKey serviceJwtSecretKey;
@@ -58,7 +52,6 @@ public class dbSeed implements CommandLineRunner {
 
         initSecretKey();
         createStorage();
-        initSequences();
 
         initRoles();
         initLightType();
@@ -81,15 +74,6 @@ public class dbSeed implements CommandLineRunner {
 
     private void createStorage() {
         fileStorage.createStorage();
-    }
-
-    private void initSequences() {
-        Session session = em.unwrap(Session.class);
-        session.doWork(connection -> connection.prepareStatement(
-                        "DROP SEQUENCE IF EXISTS uzer_mail_seq; " +
-                                "CREATE SEQUENCE uzer_mail_seq AS INTEGER; " +
-                                "ALTER SEQUENCE uzer_mail_seq OWNER TO " +
-                                "postgres;").execute());
     }
 
     private void initRoles() {
@@ -162,7 +146,6 @@ public class dbSeed implements CommandLineRunner {
 
         UzerMail userMail = new UzerMail();
         userMail.setUsername(uzer.getUsername());
-        userMail.setKey(repoUzerMail.createApplicationNumber());
         userMail.setActive(true);
 
         repoUzerMail.save(userMail);

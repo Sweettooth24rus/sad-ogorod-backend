@@ -16,6 +16,5 @@ import javax.persistence.Entity;
 public class UzerMail extends MetaEntityInteger {
 
     private String username;
-    private Integer key;
     private Boolean active;
 }
