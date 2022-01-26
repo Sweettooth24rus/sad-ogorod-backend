@@ -8,6 +8,7 @@ import com.kkoz.sadogorod.entities.recipe.GroundType;
 import com.kkoz.sadogorod.entities.recipe.LightType;
 import com.kkoz.sadogorod.entities.recipe.Recipe;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
+import com.kkoz.sadogorod.entities.uzer.UzerMail;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
 import com.kkoz.sadogorod.repositories.*;
 import com.kkoz.sadogorod.security.jwt.secret_key.ServiceJwtSecretKey;
@@ -47,6 +48,7 @@ public class dbSeed implements CommandLineRunner {
     private final RepoTypeDocument repoTypeDocument;
     private final RepoFileUpload repoFileUpload;
     private final RepoUzer repoUzer;
+    private final RepoUzerMail repoUzerMail;
     private final RepoRecipe repoRecipe;
 
     @Override
@@ -158,6 +160,12 @@ public class dbSeed implements CommandLineRunner {
         uzer.setEmail("user_with_all_possible_roles@mail.ru");
         uzer.setRole(UzerRole.ADMIN);
 
+        UzerMail userMail = new UzerMail();
+        userMail.setUsername(uzer.getUsername());
+        userMail.setKey(repoUzerMail.createApplicationNumber());
+        userMail.setActive(true);
+
+        repoUzerMail.save(userMail);
         repoUzer.save(uzer);
 
     }
