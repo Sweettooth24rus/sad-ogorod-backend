@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/tea")
 public class ApiTea {
 
+    public static Boolean active = true;
     ServiceTea serviceTea;
 
     @GetMapping("/all")
-    public Page<DtoTeaPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public ResponseEntity<Page<DtoTeaPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
+        if (!active) {
+            return new ResponseEntity<>(new PageImpl<>(new ArrayList<>()), HttpStatus.NOT_FOUND);
+        }
         Page<DtoTeaPagination> teaPage = serviceTea.getPage(page, size, sort);
-        return teaPage;
+        return new ResponseEntity<>(teaPage, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoTea tea) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Tea createdTea = serviceTea.create(tea);
         Map<String, String> response = new HashMap<>();
         response.put("id", createdTea.getId().toString());
@@ -58,14 +66,20 @@ public class ApiTea {
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoTea get(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<DtoTea> get(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         DtoTea dtoTea = new DtoTea(serviceTea.getById(id));
-        return dtoTea;
+        return new ResponseEntity<>(dtoTea, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoTea tea) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Tea updatedTea = serviceTea.update(id, tea);
         Map<String, String> response = new HashMap<>();
         response.put("response", " [" + updatedTea.getId() + "] was updated");

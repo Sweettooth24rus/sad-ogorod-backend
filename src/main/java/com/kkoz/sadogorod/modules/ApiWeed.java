@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/weed")
 public class ApiWeed {
 
+    public static Boolean active = true;
     ServiceWeed serviceWeed;
 
     @GetMapping("/all")
-    public Page<DtoWeedPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public ResponseEntity<Page<DtoWeedPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
+        if (!active) {
+            return new ResponseEntity<>(new PageImpl<>(new ArrayList<>()), HttpStatus.NOT_FOUND);
+        }
         Page<DtoWeedPagination> weedPage = serviceWeed.getPage(page, size, sort);
-        return weedPage;
+        return new ResponseEntity<>(weedPage, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoWeed weed) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Weed createdWeed = serviceWeed.create(weed);
         Map<String, String> response = new HashMap<>();
         response.put("id", createdWeed.getId().toString());
@@ -58,14 +66,20 @@ public class ApiWeed {
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoWeed get(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<DtoWeed> get(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         DtoWeed dtoWeed = new DtoWeed(serviceWeed.getById(id));
-        return dtoWeed;
+        return new ResponseEntity<>(dtoWeed, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoWeed weed) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Weed updatedWeed = serviceWeed.update(id, weed);
         Map<String, String> response = new HashMap<>();
         response.put("response", " [" + updatedWeed.getId() + "] was updated");

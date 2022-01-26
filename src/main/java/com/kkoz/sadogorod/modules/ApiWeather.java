@@ -6,6 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/weather")
 public class ApiWeather {
 
+    public static Boolean active = true;
+
     @GetMapping("/get")
     public ResponseEntity<String> getWeather() throws UnirestException {
+        if (!active) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
         log.info("-> GET: WEATHER");
         JsonNode tmp = ServiceWeather.mail();
         log.info("<- GET: WEATHER");

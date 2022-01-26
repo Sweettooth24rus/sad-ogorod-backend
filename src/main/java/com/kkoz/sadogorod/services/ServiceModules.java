@@ -57,7 +57,7 @@ public class ServiceModules {
         File directory = new File("E:\\sad-ogorod-backend\\src\\main\\java\\com\\kkoz\\sadogorod\\modules");
 
         for (final File fileEntry : Objects.requireNonNull(directory.listFiles())) {
-            newModules.add(new Modules(fileEntry.getName()));
+            newModules.add(new Modules(fileEntry.getName().substring(0, fileEntry.getName().indexOf(".java"))));
         }
 
         for (Modules module:

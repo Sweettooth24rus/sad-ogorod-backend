@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/garden")
 public class ApiGarden {
 
-    public static Boolean active = false;
+    public static Boolean active = true;
     ServiceGarden serviceGarden;
 
     @GetMapping("/all")

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/pickle")
 public class ApiPickle {
 
+    public static Boolean active = true;
     ServicePickle servicePickle;
 
     @GetMapping("/all")
-    public Page<DtoPicklePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public ResponseEntity<Page<DtoPicklePagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
+        if (!active) {
+            return new ResponseEntity<>(new PageImpl<>(new ArrayList<>()), HttpStatus.NOT_FOUND);
+        }
         Page<DtoPicklePagination> picklePage = servicePickle.getPage(page, size, sort);
-        return picklePage;
+        return new ResponseEntity<>(picklePage, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoPickle pickle) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Pickle createdPickle = servicePickle.create(pickle);
         Map<String, String> response = new HashMap<>();
         response.put("id", createdPickle.getId().toString());
@@ -58,14 +66,20 @@ public class ApiPickle {
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoPickle get(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<DtoPickle> get(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         DtoPickle dtoPickle = new DtoPickle(servicePickle.getById(id));
-        return dtoPickle;
+        return new ResponseEntity<>(dtoPickle, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoPickle pickle) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Pickle updatedPickle = servicePickle.update(id, pickle);
         Map<String, String> response = new HashMap<>();
         response.put("response", " [" + updatedPickle.getId() + "] was updated");

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/greenhouse")
 public class ApiGreenhouse {
 
+    public static Boolean active = true;
     ServiceGreenhouse serviceGreenhouse;
 
     @GetMapping("/all")
-    public Page<DtoGreenhousePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public ResponseEntity<Page<DtoGreenhousePagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
+        if (!active) {
+            return new ResponseEntity<>(new PageImpl<>(new ArrayList<>()), HttpStatus.NOT_FOUND);
+        }
         Page<DtoGreenhousePagination> greenhousePage = serviceGreenhouse.getPage(page, size, sort);
-        return greenhousePage;
+        return new ResponseEntity<>(greenhousePage, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoGreenhouse greenhouse) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Greenhouse createdGreenhouse = serviceGreenhouse.create(greenhouse);
         Map<String, String> response = new HashMap<>();
         response.put("id", createdGreenhouse.getId().toString());
@@ -58,14 +66,20 @@ public class ApiGreenhouse {
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoGreenhouse get(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<DtoGreenhouse> get(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         DtoGreenhouse dtoGreenhouse = new DtoGreenhouse(serviceGreenhouse.getById(id));
-        return dtoGreenhouse;
+        return new ResponseEntity<>(dtoGreenhouse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoGreenhouse greenhouse) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Greenhouse updatedGreenhouse = serviceGreenhouse.update(id, greenhouse);
         Map<String, String> response = new HashMap<>();
         response.put("response", " [" + updatedGreenhouse.getId() + "] was updated");
