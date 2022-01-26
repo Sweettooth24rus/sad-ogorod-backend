@@ -41,6 +41,10 @@ public class ApiGarden {
     public static Boolean active = true;
     ServiceGarden serviceGarden;
 
+    public static void changeActivity() {
+        active = !active;
+    }
+
     @GetMapping("/all")
     public ResponseEntity<Page<DtoGardenPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,10 +43,19 @@ public class ServiceModules {
                 .collect(Collectors.toList());
     }
 
-    public Modules updateModuleActivity(Integer id) {
+    public Modules updateModuleActivity(Integer id) throws IOException {
         Modules modules = repoModules.getById(id);
 
         modules.setActivity(!modules.getActivity());
+
+        File directory = new File("./src/main/java/com/kkoz/sadogorod/modules");
+
+        for (final File fileEntry : Objects.requireNonNull(directory.listFiles())) {
+            if (fileEntry.getName().equals(modules.getName())) {
+                Runtime.getRuntime().exec("com.kkoz.sadogorod.modules." + modules.getName() + ".changeActivity();");
+                Runtime.getRuntime().exec("com.kkoz.sadogorod.modules." + modules.getName() + ".active");
+            }
+        }
 
         return repoModules.save(modules);
     }
@@ -54,7 +64,7 @@ public class ServiceModules {
         List<Modules> oldModules = repoModules.findAll();
         List<Modules> modules = new ArrayList<>();
         List<Modules> newModules = new ArrayList<>();
-        File directory = new File("E:\\sad-ogorod-backend\\src\\main\\java\\com\\kkoz\\sadogorod\\modules");
+        File directory = new File("./src/main/java/com/kkoz/sadogorod/modules");
 
         for (final File fileEntry : Objects.requireNonNull(directory.listFiles())) {
             newModules.add(new Modules(fileEntry.getName().substring(0, fileEntry.getName().indexOf(".java"))));

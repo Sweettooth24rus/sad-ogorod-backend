@@ -7,9 +7,11 @@ import com.kkoz.sadogorod.services.ServiceModules;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +32,9 @@ public class ApiModules {
         return modules;
     }
 
+    @Transactional
     @PutMapping("/activity/{id}")
-    public ResponseEntity<Map<String, String>> updateModuleActivity(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<Map<String, String>> updateModuleActivity(@PathVariable @Min(1) Integer id) throws IOException {
         log.info("-> PUT: Updating module [{}] activity", id);
         Modules updatedModule = serviceModules.updateModuleActivity(id);
         Map<String, String> response = new HashMap<>();
