@@ -48,14 +48,14 @@ public class dbSeed implements CommandLineRunner {
 
         createStorage();
 
-//        initRoles();
-//        initLightType();
-//        initGroungType();
-//        initDifficulty();
-//        initTypeDocuments();
-//
-//        initUser();
-//        initRecipe();
+        initRoles();
+        initLightType();
+        initGroungType();
+        initDifficulty();
+        initTypeDocuments();
+
+        initUser();
+        initRecipe();
 
         log.warn(" <-- Initialization ended -->");
     }
@@ -163,11 +163,11 @@ public class dbSeed implements CommandLineRunner {
 
         FileUpload file = new FileUpload();
         file.setCreated(LocalDateTime.now());
-        file.setMimeType("application/pdf");
-        UUID uuid = UUID.randomUUID();
+        file.setMimeType("image/jpg");
+        UUID uuid = UUID.fromString("c83317be-647e-4a7a-9064-cf740711678d");//UUID.randomUUID();
         file.setOriginalFileName(uuid + ".jpg");
         file.setUuid(uuid);
-        file.setSize(Integer.toUnsignedLong(1));
+        file.setSize(120L);
         file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(1) + "/" + uuid + ".jpg");
         file.setTypeDocument(repoTypeDocument.getById(1));
 

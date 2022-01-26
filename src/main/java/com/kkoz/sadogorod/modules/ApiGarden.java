@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/garden")
 public class ApiGarden {
 
+    public static Boolean active = false;
     ServiceGarden serviceGarden;
 
     @GetMapping("/all")
-    public Page<DtoGardenPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public ResponseEntity<Page<DtoGardenPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
                                              @RequestParam(required = false, defaultValue = "-id") String sort) {
+        if (!active) {
+            return new ResponseEntity<>(new PageImpl<>(new ArrayList<>()), HttpStatus.NOT_FOUND);
+        }
         Page<DtoGardenPagination> gardenPage = serviceGarden.getPage(page, size, sort);
-        return gardenPage;
+        return new ResponseEntity<>(gardenPage, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoGarden garden) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Garden createdGarden = serviceGarden.create(garden);
         Map<String, String> response = new HashMap<>();
         response.put("id", createdGarden.getId().toString());
@@ -58,14 +66,20 @@ public class ApiGarden {
 
     @Transactional
     @GetMapping("/{id}")
-    public DtoGarden get(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<DtoGarden> get(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         DtoGarden dtoGarden = new DtoGarden(serviceGarden.getById(id));
-        return dtoGarden;
+        return new ResponseEntity<>(dtoGarden, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoGarden garden) {
+        if (!active) {
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.NOT_FOUND);
+        }
         Garden updatedGarden = serviceGarden.update(id, garden);
         Map<String, String> response = new HashMap<>();
         response.put("response", " [" + updatedGarden.getId() + "] was updated");
