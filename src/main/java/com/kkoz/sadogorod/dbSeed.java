@@ -89,7 +89,7 @@ public class dbSeed implements CommandLineRunner {
                         "DROP SEQUENCE IF EXISTS uzer_mail_seq; " +
                                 "CREATE SEQUENCE uzer_mail_seq AS INTEGER; " +
                                 "ALTER SEQUENCE uzer_mail_seq OWNER TO " +
-                                /*System.getenv("DATABASE_URL").split(":")[0] + */"db_user;").execute());
+                                System.getenv("DATABASE_URL").split(":")[0]+ ";").execute());
     }
 
     private void initRoles() {
