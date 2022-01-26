@@ -1,15 +1,13 @@
 package com.kkoz.sadogorod.controls;
 
 
+import com.kkoz.sadogorod.controls.exceptions.NotFoundException;
 import com.kkoz.sadogorod.dto.uzer.DtoUzer;
+import com.kkoz.sadogorod.dto.uzer.DtoUzerCredentials;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerPagination;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerUpdate;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
-import com.kkoz.sadogorod.security.CustomAuthenticationProvider;
-import com.kkoz.sadogorod.security.dto.DtoAuthCredentials;
-import com.kkoz.sadogorod.security.dto.DtoAuthSuccess;
-import com.kkoz.sadogorod.security.jwt.utils.JwtUtils;
 import com.kkoz.sadogorod.services.ServiceUzer;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.LoginException;
@@ -40,9 +32,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/user")
 public class ApiUzer {
 
-    private final JwtUtils jwtUtils;
     private final ServiceUzer serviceUzer;
-    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @GetMapping("/all")
     public Page<DtoUzerPagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
@@ -108,26 +98,27 @@ public class ApiUzer {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<DtoAuthSuccess> login(@Valid @RequestBody DtoAuthCredentials credentials) throws LoginException {
+    public ResponseEntity<String> login(@RequestBody DtoUzerCredentials credentials) throws LoginException {
         log.info("-> POST: Authentication: uzername[{}]", credentials.getUsername());
 
-        Authentication authentication;
-
         try {
-            authentication = customAuthenticationProvider.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            credentials.getUsername(),
-                            credentials.getPassword()
-                    )
-            );
-        } catch (InternalAuthenticationServiceException e) {
+
+            final String username = credentials.getUsername();
+            final String password = credentials.getPassword();
+
+            Uzer uzer;
+
+            if (serviceUzer.existsByUsername(username)) {
+                uzer = serviceUzer.getByCredentials(new DtoUzerCredentials(username, password));
+                if (!uzer.getIsActive()) {
+                    throw new NotFoundException("Неверно указан логин или пароль");
+                }
+            }
+            else {
+                throw new NotFoundException("Неверно указан логин или пароль");
+            }
+        } catch (NotFoundException e) {
             log.debug("<- POST: Authentication failed. There is no such uzer with uzername[{}]", credentials.getUsername());
-            throw new LoginException("Неверно указан логин или пароль");
-        } catch (BadCredentialsException e) {
-            log.debug("<- POST: Authentication failed. Bad credentials for uzername[{}]", credentials.getUsername());
-            throw new LoginException("Неверно указан логин или пароль");
-        } catch (LockedException e) {
-            log.debug("<- POST: Authentication failed. Inactive uzername[{}]", credentials.getUsername());
             throw new LoginException("Неверно указан логин или пароль");
         }
 
@@ -135,17 +126,7 @@ public class ApiUzer {
             throw new LoginException("Аккаунт не активирован");
         }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        Uzer uzer = (Uzer) authentication.getPrincipal();
-
-        String jwt          = jwtUtils.generateJwt(uzer);
-        String refreshToken = jwtUtils.generateRefreshToken(uzer);
-
-        log.info("<- POST: Authentication success: id[{}], uzername[{}], role[{}]",
-                uzer.getId(), uzer.getUsername(), uzer.getRole());
-
-        return ResponseEntity.ok(new DtoAuthSuccess(jwt, refreshToken));
+        return ResponseEntity.ok("Успешно");
     }
 
     @PostMapping("/")

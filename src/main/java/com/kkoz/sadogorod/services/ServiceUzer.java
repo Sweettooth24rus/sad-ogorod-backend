@@ -4,6 +4,7 @@ import com.kkoz.sadogorod.controls.exceptions.MismatchException;
 import com.kkoz.sadogorod.controls.exceptions.NotFoundException;
 import com.kkoz.sadogorod.controls.exceptions.UniqueUzerException;
 import com.kkoz.sadogorod.dto.uzer.DtoUzer;
+import com.kkoz.sadogorod.dto.uzer.DtoUzerCredentials;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerPagination;
 import com.kkoz.sadogorod.dto.uzer.DtoUzerUpdate;
 import com.kkoz.sadogorod.entities.uzer.Uzer;
@@ -12,7 +13,6 @@ import com.kkoz.sadogorod.entities.uzer.UzerRole;
 import com.kkoz.sadogorod.filters.SpecUzer;
 import com.kkoz.sadogorod.repositories.RepoUzer;
 import com.kkoz.sadogorod.repositories.RepoUzerMail;
-import com.kkoz.sadogorod.security.dto.DtoAuthCredentials;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -26,12 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
@@ -41,17 +35,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ServiceUzer implements UserDetailsService {
+public class ServiceUzer {
 
     private final RepoUzerMail repoUzerMail;
     private final RepoUzer repoUzer;
     private final SpecUzer specUzer;
-    private final PasswordEncoder passwordEncoder;
     private final ServicePageable servicePageable;
 
     @SneakyThrows
-    @Override
-    public Uzer loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Uzer loadUserByUsername(String username) {
         return repoUzer.getByUsername(username)
                 .orElseThrow(() -> new LoginException(
                         "Неверно указан логин или пароль"
@@ -66,20 +58,19 @@ public class ServiceUzer implements UserDetailsService {
                 ));
     }
 
-    public Uzer getByCredentials(DtoAuthCredentials credentials) {
+    public Uzer getByCredentials(DtoUzerCredentials credentials) {
         String encodedPassword = this.getByUsername(credentials.getUsername()).getPassword();
-        if (passwordEncoder.matches(credentials.getPassword(), encodedPassword)) {
+        if (credentials.getPassword().equals(encodedPassword)) {
             return repoUzer.getByUsername(credentials.getUsername()).get();
         }
         else {
-            throw new BadCredentialsException("Неправильно указан логин или пароль");
+            throw new NotFoundException("Неправильно указан логин или пароль");
         }
     }
 
     public Uzer getCurrentUzer() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getPrincipal().toString();
-        return this.getById(Integer.parseInt(username.substring(username.lastIndexOf("@") + 1)));
+        return new Uzer();
+        //return this.getById(Integer.parseInt(username.substring(username.lastIndexOf("@") + 1)));
     }
 
     public Page<DtoUzerPagination> getPage(Integer page, Integer size, String sort, String username,
@@ -155,7 +146,7 @@ public class ServiceUzer implements UserDetailsService {
 
         if (dtoUzer.getPassword() != null && !dtoUzer.getPassword().isBlank()) {
             uzer.setPassword(
-                    passwordEncoder.encode(dtoUzer.getPassword())
+                    dtoUzer.getPassword()
             );
         }
         uzer.setLastName(dtoUzer.getLastName());

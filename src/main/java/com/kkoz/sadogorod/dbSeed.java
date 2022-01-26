@@ -11,14 +11,11 @@ import com.kkoz.sadogorod.entities.uzer.Uzer;
 import com.kkoz.sadogorod.entities.uzer.UzerMail;
 import com.kkoz.sadogorod.entities.uzer.UzerRole;
 import com.kkoz.sadogorod.repositories.*;
-import com.kkoz.sadogorod.security.jwt.secret_key.ServiceJwtSecretKey;
 import com.kkoz.sadogorod.utils.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +31,6 @@ import java.util.UUID;
 public class dbSeed implements CommandLineRunner {
 
     private final FileStorageUtil fileStorage;
-    private final ServiceJwtSecretKey serviceJwtSecretKey;
     private final RepoRole repoRole;
     private final RepoLightType repoLightType;
     private final RepoGroundType repoGroundType;
@@ -50,7 +46,6 @@ public class dbSeed implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.warn(" <-- Initialization started -->");
 
-        initSecretKey();
         createStorage();
 
         initRoles();
@@ -63,13 +58,6 @@ public class dbSeed implements CommandLineRunner {
         initRecipe();
 
         log.warn(" <-- Initialization ended -->");
-    }
-
-    private void initSecretKey() {
-        serviceJwtSecretKey.generateNewActive();
-        serviceJwtSecretKey.generateNewActive();
-        serviceJwtSecretKey.generateNewActive();
-
     }
 
     private void createStorage() {
@@ -131,12 +119,10 @@ public class dbSeed implements CommandLineRunner {
     }
 
     private void initUser() {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         Uzer uzer = new Uzer();
         uzer.setUsername("all_roles");
-        uzer.setPassword(
-                passwordEncoder.encode("pwd")
+        uzer.setPassword("pwd"
         );
         uzer.setLastName("all_roles");
         uzer.setFirstName("all_roles");

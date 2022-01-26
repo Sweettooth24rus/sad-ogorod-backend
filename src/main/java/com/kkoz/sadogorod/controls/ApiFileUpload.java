@@ -3,7 +3,6 @@ package com.kkoz.sadogorod.controls;
 import com.kkoz.sadogorod.controls.exceptions.FileExtensionException;
 import com.kkoz.sadogorod.controls.exceptions.FileStoreException;
 import com.kkoz.sadogorod.dto.file.DtoFileUpload;
-import com.kkoz.sadogorod.security.jwt.utils.JwtUtils;
 import com.kkoz.sadogorod.services.ServiceFileUpload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import java.util.UUID;
 @RequestMapping("/api/file")
 public class ApiFileUpload {
 
-    private final JwtUtils jwtUtils;
     private final ServiceFileUpload serviceFileUpload;
 
     @PostMapping("/upload")

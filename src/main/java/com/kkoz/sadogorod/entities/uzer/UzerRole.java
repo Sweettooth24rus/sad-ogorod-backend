@@ -3,10 +3,9 @@ package com.kkoz.sadogorod.entities.uzer;
 
 import com.kkoz.sadogorod.controls.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 
 @AllArgsConstructor
-public enum UzerRole implements GrantedAuthority {
+public enum UzerRole {
 
     ADMIN    ("ADMIN", "Администратор"),
     MEGA     ("MEGA", "Мега"),
@@ -16,15 +15,6 @@ public enum UzerRole implements GrantedAuthority {
 
     private final String key;
     private final String value;
-
-    @Override
-    public String getAuthority() {
-        return this.toAuthority().getAuthority();
-    }
-
-    public GrantedAuthority toAuthority() {
-        return () -> String.format("ROLE_%s", this.name());
-    }
 
     public String getKey() {
         return this.key;
