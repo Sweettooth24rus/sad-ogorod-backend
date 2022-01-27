@@ -223,7 +223,7 @@ public class dbSeed implements CommandLineRunner {
         UUID uuid = UUID.fromString("c83317be-647e-4a7a-9064-cf740711678e");//UUID.randomUUID();
         file.setOriginalFileName(uuid + ".jpg");
         file.setUuid(uuid);
-        file.setSize(367L);
+        file.setSize(84L);
         file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(2) + "/" + uuid + ".jpg");
         file.setTypeDocument(repoTypeDocument.getById(1));
 
@@ -254,7 +254,7 @@ public class dbSeed implements CommandLineRunner {
         UUID uuid = UUID.fromString("c83317be-647e-4a7a-9064-cf740711678f");//UUID.randomUUID();
         file.setOriginalFileName(uuid + ".jpg");
         file.setUuid(uuid);
-        file.setSize(367L);
+        file.setSize(72L);
         file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(3) + "/" + uuid + ".jpg");
         file.setTypeDocument(repoTypeDocument.getById(1));
 
