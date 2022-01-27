@@ -48,14 +48,16 @@ public class dbSeed implements CommandLineRunner {
 
         createStorage();
 
-        /*initRoles();
+        initRoles();
         initLightType();
         initGroungType();
         initDifficulty();
         initTypeDocuments();
 
         initUser();
-        initRecipe();*/
+        initRecipe();
+        initRecipe1();
+        initRecipe2();
 
         log.warn(" <-- Initialization ended -->");
     }
@@ -148,24 +150,41 @@ public class dbSeed implements CommandLineRunner {
 
         Recipe recipe = new Recipe();
 
-        recipe.setName("Рецепт");
-        recipe.setDescription("йцукенгшщзхзщшгеав ыячсмитьорпавымитолшгн пморлботамлруаиомриуомр " +
-                "иуомиулмулотмлуомлруиалмабвьлыд орпнрасптьбиотдолапрлорьипнеавкспмри " +
-                "тошргпнавекнсапмриотлошргпнаевспмри отлощршгпнаермио0тль длщшргвотлауькдлцмвщшорваотльма " +
-                "вдлсщваошолимвс тдшозмвмашпдтомвдмтлваоцуомв дтвшоацдуто дмстшоавдтцо отвшмоыац одтмвшотдацуо " +
-                "модтвшоматцоу дмтш вмшат атмодвмшватаьт мошат октошзов тма ктотмшоа ваоутьа тзоу9 " +
-                "тшлпомарк03ауко8ашр оимрка43мк маи мукщагшкмту о вощмуа2шолмт авомкшалм овтакошмуол мтвмуакшлмутьм " +
-                "аоьшзуалштср мвиуцвтлцщлвыс всгимруцодльс шоргмшавнрацил " +
-                "увольуащзаишрщгрвлмц бьжлацуошприщгаотдлвцьдйщлушопаилом");
+        recipe.setName("Огурец");
+        recipe.setDescription("Огурцы выращивают рассадным и безрассадным методом. " +
+                "Посев семян огурца на рассаду производят примерно за месяц до высадки на участок. " +
+                "Семена огурца предварительно следует замочить и прорастить - это ускорит появление всходов. " +
+                "Непосредственно в открытый грунт рассаду огурцов высаживают, когда почва достаточно прогреется " +
+                "(примерно в конце мая в средней полосе России, в начале мая - в центральной Европе). " +
+                "При безрассадном методе посев набухших или проросших семян огурца производят в почву, " +
+                "температура которой в верхнем слое не ниже 13-15 градусов, иначе семена просто разлагаются. " +
+                "Глубина заделки семян огурца – около 2 см, плотность – 5-7 растений на квадратный метр. " +
+                "Сажать огурцы лучше по нескольку разных сортов рядом, это улучшает опыляемость растений и " +
+                "способствует более высоким урожаям.\nПочва для огурцов должна быть в меру рыхлая, " +
+                "хорошо удерживающая влагу и очень плодородная. Поскольку корневая система огурца небольшая, " +
+                "то очень удобно выращивать огурцы, внося органику локально – в посадочные ямы или траншеи. " +
+                "Выкапывают лунку или траншею на глубину около 40 см, укладывают слой органики, перемешивают с почвой, " +
+                "сверху засыпают уже чистой почвой, в которую высаживают огурцы. Разлагаясь, органика выделяет много тепла, " +
+                "что ускоряет рост и развитие растений, а в последующем служит отличной подкормкой практически на весь сезон.\n" +
+                "Место для выращивания огурцов должно хорошо освещаться солнцем (допустима полутень) и " +
+                "быть защищенным от ветра. В частности, при устройстве гряд в открытом грунте в качестве " +
+                "'живого заслона' можно использовать кукурузу, посеяв её в две строчки по сторонам огуречной грядки, " +
+                "оставив открытой южную сторону.\n" +
+                "Оптимальная температура для нормального развития огурцов (как и других тыквенных культур) " +
+                "колеблется в пределах 23-30 градусов. Температура воздуха ниже 15 градусов приводит к угнетению и " +
+                "остановке роста растений на любой стадии развития. Заморозки для огурцов губительны " +
+                "(особенно для молодых неокрепших растений), перепады температуры тормозят рост. " +
+                "Поэтому в Северной Европе и средней полосе России часто огурцы выращивают под пленочными укрытиями, " +
+                "хотя бы в первую половину лета.");
         recipe.setDays(50);
-        recipe.setLightType(LightType.HIGH);
-        recipe.setLightTime(54);
+        recipe.setLightType(LightType.LOW);
+        recipe.setLightTime(14);
         recipe.setGroundType(GroundType.BLACK_SOIL);
-        recipe.setMinTemperature(10);
-        recipe.setMaxTemperature(100);
+        recipe.setMinTemperature(15);
+        recipe.setMaxTemperature(30);
         recipe.setDifficulty(Difficulty.HARD);
 
-        recipe.setComment("Комментарий");
+        recipe.setComment("Какой-то комментарий к огурцам");
 
         FileUpload file = new FileUpload();
         file.setCreated(LocalDateTime.now());
@@ -173,8 +192,70 @@ public class dbSeed implements CommandLineRunner {
         UUID uuid = UUID.fromString("c83317be-647e-4a7a-9064-cf740711678d");//UUID.randomUUID();
         file.setOriginalFileName(uuid + ".jpg");
         file.setUuid(uuid);
-        file.setSize(120L);
+        file.setSize(367L);
         file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(1) + "/" + uuid + ".jpg");
+        file.setTypeDocument(repoTypeDocument.getById(1));
+
+        recipe.setFiles(List.of(repoFileUpload.save(file)));
+
+        repoRecipe.save(recipe);
+    }
+
+    private void initRecipe1() {
+
+        Recipe recipe = new Recipe();
+
+        recipe.setName("Помидор");
+        recipe.setDescription("Очень длинное описание выращивания помидоров");
+        recipe.setDays(84);
+        recipe.setLightType(LightType.MEDIUM);
+        recipe.setLightTime(12);
+        recipe.setGroundType(GroundType.SANDY_LOAM);
+        recipe.setMinTemperature(10);
+        recipe.setMaxTemperature(25);
+        recipe.setDifficulty(Difficulty.NORMAL);
+
+        recipe.setComment("Какой-то комментарий к помидорам");
+
+        FileUpload file = new FileUpload();
+        file.setCreated(LocalDateTime.now());
+        file.setMimeType("image/jpg");
+        UUID uuid = UUID.fromString("c83317be-647e-4a7a-9064-cf740711678e");//UUID.randomUUID();
+        file.setOriginalFileName(uuid + ".jpg");
+        file.setUuid(uuid);
+        file.setSize(367L);
+        file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(2) + "/" + uuid + ".jpg");
+        file.setTypeDocument(repoTypeDocument.getById(1));
+
+        recipe.setFiles(List.of(repoFileUpload.save(file)));
+
+        repoRecipe.save(recipe);
+    }
+
+    private void initRecipe2() {
+
+        Recipe recipe = new Recipe();
+
+        recipe.setName("Капуста");
+        recipe.setDescription("Очень длинное описание выращивания капусты");
+        recipe.setDays(77);
+        recipe.setLightType(LightType.LOW);
+        recipe.setLightTime(5);
+        recipe.setGroundType(GroundType.PEAT_BOG);
+        recipe.setMinTemperature(2);
+        recipe.setMaxTemperature(24);
+        recipe.setDifficulty(Difficulty.VERY_EASY);
+
+        recipe.setComment("Какой-то комментарий к капусте");
+
+        FileUpload file = new FileUpload();
+        file.setCreated(LocalDateTime.now());
+        file.setMimeType("image/jpg");
+        UUID uuid = UUID.fromString("c83317be-647e-4a7a-9064-cf740711678f");//UUID.randomUUID();
+        file.setOriginalFileName(uuid + ".jpg");
+        file.setUuid(uuid);
+        file.setSize(367L);
+        file.setStorePath("./app/file-storage/Recipe/" + Integer.toUnsignedLong(3) + "/" + uuid + ".jpg");
         file.setTypeDocument(repoTypeDocument.getById(1));
 
         recipe.setFiles(List.of(repoFileUpload.save(file)));
