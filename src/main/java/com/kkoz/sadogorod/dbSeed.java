@@ -236,7 +236,7 @@ public class dbSeed implements CommandLineRunner {
 
         Recipe recipe = new Recipe();
 
-        recipe.setName("Капуста");
+        recipe.setName("Морковка");
         recipe.setDescription("Очень длинное описание выращивания капусты");
         recipe.setDays(77);
         recipe.setLightType(LightType.LOW);
