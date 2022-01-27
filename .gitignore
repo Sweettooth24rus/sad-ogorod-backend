@@ -33,4 +33,3 @@ build/
 .vscode/
 /data/
 src/main/java/com/kkoz/sadogorod/dbConfig.java
-/app/
