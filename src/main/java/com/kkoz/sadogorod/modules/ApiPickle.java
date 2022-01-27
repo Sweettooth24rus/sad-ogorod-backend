@@ -41,6 +41,7 @@ public class ApiPickle {
     public static Boolean active = true;
     private final ServicePickle servicePickle;
 
+    @Transactional
     @GetMapping("/all")
     public ResponseEntity<Page<DtoPicklePagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -52,6 +53,7 @@ public class ApiPickle {
         return new ResponseEntity<>(picklePage, HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoPickle pickle) {
         if (!active) {
@@ -74,6 +76,7 @@ public class ApiPickle {
         return new ResponseEntity<>(dtoPickle, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoPickle pickle) {
@@ -86,6 +89,7 @@ public class ApiPickle {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
         if (!active) {
@@ -143,7 +147,7 @@ class ServicePickle {
     private Pickle save(Pickle pickle, DtoPickle dtoPickle) {
         pickle.setName(dtoPickle.getName());
         pickle.setDescription(dtoPickle.getDescription());
-        pickle.setFiles(List.of(this.dtoDoc2AppFile(dtoPickle.getPhoto(), TypeDocument.PICKLE_PHOTO)));
+        pickle.setFiles(this.dtoDoc2AppFile(dtoPickle.getPhoto(), TypeDocument.PICKLE_PHOTO));
 
         Pickle savedPickle;
 
@@ -157,9 +161,10 @@ class ServicePickle {
         return savedPickle;
     }
 
-    private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
-        FileUpload appFile = new FileUpload();
+    private List<FileUpload> dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
+        List<FileUpload> appFiles = new ArrayList<>();
 
+        FileUpload appFile = new FileUpload();
         appFile.setId(dtoFile.getId());
         appFile.setCreated(dtoFile.getCreated());
         appFile.setMimeType(dtoFile.getMimeType());
@@ -169,7 +174,9 @@ class ServicePickle {
         appFile.setStorePath(dtoFile.getStorePath());
         appFile.setTypeDocument(typeDocument);
 
-        return appFile;
+        appFiles.add(appFile);
+
+        return appFiles;
     }
 }
 

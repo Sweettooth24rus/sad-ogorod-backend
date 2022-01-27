@@ -41,6 +41,7 @@ public class ApiGreenhouse {
     public static Boolean active = true;
     private final ServiceGreenhouse serviceGreenhouse;
 
+    @Transactional
     @GetMapping("/all")
     public ResponseEntity<Page<DtoGreenhousePagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -52,6 +53,7 @@ public class ApiGreenhouse {
         return new ResponseEntity<>(greenhousePage, HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoGreenhouse greenhouse) {
         if (!active) {
@@ -74,6 +76,7 @@ public class ApiGreenhouse {
         return new ResponseEntity<>(dtoGreenhouse, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoGreenhouse greenhouse) {
@@ -86,6 +89,7 @@ public class ApiGreenhouse {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
         if (!active) {
@@ -143,7 +147,7 @@ class ServiceGreenhouse {
     private Greenhouse save(Greenhouse greenhouse, DtoGreenhouse dtoGreenhouse) {
         greenhouse.setName(dtoGreenhouse.getName());
         greenhouse.setDescription(dtoGreenhouse.getDescription());
-        greenhouse.setFiles(List.of(this.dtoDoc2AppFile(dtoGreenhouse.getPhoto(), TypeDocument.GREENHOUSE_PHOTO)));
+        greenhouse.setFiles(this.dtoDoc2AppFile(dtoGreenhouse.getPhoto(), TypeDocument.GREENHOUSE_PHOTO));
         greenhouse.setMaterials(dtoGreenhouse.getMaterials());
 
         Greenhouse savedGreenhouse;
@@ -158,9 +162,10 @@ class ServiceGreenhouse {
         return savedGreenhouse;
     }
 
-    private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
-        FileUpload appFile = new FileUpload();
+    private List<FileUpload> dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
+        List<FileUpload> appFiles = new ArrayList<>();
 
+        FileUpload appFile = new FileUpload();
         appFile.setId(dtoFile.getId());
         appFile.setCreated(dtoFile.getCreated());
         appFile.setMimeType(dtoFile.getMimeType());
@@ -170,7 +175,9 @@ class ServiceGreenhouse {
         appFile.setStorePath(dtoFile.getStorePath());
         appFile.setTypeDocument(typeDocument);
 
-        return appFile;
+        appFiles.add(appFile);
+
+        return appFiles;
     }
 }
 

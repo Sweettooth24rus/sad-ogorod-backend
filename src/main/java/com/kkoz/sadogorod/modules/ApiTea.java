@@ -41,6 +41,7 @@ public class ApiTea {
     public static Boolean active = true;
     private final ServiceTea serviceTea;
 
+    @Transactional
     @GetMapping("/all")
     public ResponseEntity<Page<DtoTeaPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -52,6 +53,7 @@ public class ApiTea {
         return new ResponseEntity<>(teaPage, HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoTea tea) {
         if (!active) {
@@ -74,6 +76,7 @@ public class ApiTea {
         return new ResponseEntity<>(dtoTea, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoTea tea) {
@@ -86,6 +89,7 @@ public class ApiTea {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
         if (!active) {
@@ -143,7 +147,7 @@ class ServiceTea {
     private Tea save(Tea tea, DtoTea dtoTea) {
         tea.setName(dtoTea.getName());
         tea.setDescription(dtoTea.getDescription());
-        tea.setFiles(List.of(this.dtoDoc2AppFile(dtoTea.getPhoto(), TypeDocument.TEA_PHOTO)));
+        tea.setFiles(this.dtoDoc2AppFile(dtoTea.getPhoto(), TypeDocument.TEA_PHOTO));
         tea.setTime(dtoTea.getTime());
 
         Tea savedTea;
@@ -158,9 +162,10 @@ class ServiceTea {
         return savedTea;
     }
 
-    private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
-        FileUpload appFile = new FileUpload();
+    private List<FileUpload> dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
+        List<FileUpload> appFiles = new ArrayList<>();
 
+        FileUpload appFile = new FileUpload();
         appFile.setId(dtoFile.getId());
         appFile.setCreated(dtoFile.getCreated());
         appFile.setMimeType(dtoFile.getMimeType());
@@ -170,7 +175,9 @@ class ServiceTea {
         appFile.setStorePath(dtoFile.getStorePath());
         appFile.setTypeDocument(typeDocument);
 
-        return appFile;
+        appFiles.add(appFile);
+
+        return appFiles;
     }
 }
 

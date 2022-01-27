@@ -27,6 +27,7 @@ public class ApiRecipe {
 
     private final ServiceRecipe serviceRecipe;
 
+    @Transactional
     @GetMapping("/all")
     public Page<DtoRecipePagination> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -41,6 +42,7 @@ public class ApiRecipe {
         return recipePage;
     }
 
+    @Transactional
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> createRecipe(@RequestBody DtoRecipe recipe) {
         log.info("-> POST: Adding new recipe: {}", recipe);
@@ -61,6 +63,7 @@ public class ApiRecipe {
         return dtoRecipe;
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateRecipe(@PathVariable @Min(1) Integer id,
                                                           @Valid @RequestBody DtoRecipe recipe) {
@@ -72,6 +75,7 @@ public class ApiRecipe {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRecipe(@PathVariable @Min(1) Integer id) {
         return ResponseEntity.ok(serviceRecipe.deleteRecipe(id));

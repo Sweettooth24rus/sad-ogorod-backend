@@ -41,6 +41,7 @@ public class ApiWeed {
     public static Boolean active = true;
     private final ServiceWeed serviceWeed;
 
+    @Transactional
     @GetMapping("/all")
     public ResponseEntity<Page<DtoWeedPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -52,6 +53,7 @@ public class ApiWeed {
         return new ResponseEntity<>(weedPage, HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoWeed weed) {
         if (!active) {
@@ -74,6 +76,7 @@ public class ApiWeed {
         return new ResponseEntity<>(dtoWeed, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoWeed weed) {
@@ -86,6 +89,7 @@ public class ApiWeed {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
         if (!active) {
@@ -143,7 +147,7 @@ class ServiceWeed {
     private Weed save(Weed weed, DtoWeed dtoWeed) {
         weed.setName(dtoWeed.getName());
         weed.setDescription(dtoWeed.getDescription());
-        weed.setFiles(List.of(this.dtoDoc2AppFile(dtoWeed.getPhoto(), TypeDocument.WEED_PHOTO)));
+        weed.setFiles(this.dtoDoc2AppFile(dtoWeed.getPhoto(), TypeDocument.WEED_PHOTO));
         weed.setRegion(dtoWeed.getRegion());
 
         Weed savedWeed;
@@ -158,9 +162,10 @@ class ServiceWeed {
         return savedWeed;
     }
 
-    private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
-        FileUpload appFile = new FileUpload();
+    private List<FileUpload> dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
+        List<FileUpload> appFiles = new ArrayList<>();
 
+        FileUpload appFile = new FileUpload();
         appFile.setId(dtoFile.getId());
         appFile.setCreated(dtoFile.getCreated());
         appFile.setMimeType(dtoFile.getMimeType());
@@ -170,7 +175,9 @@ class ServiceWeed {
         appFile.setStorePath(dtoFile.getStorePath());
         appFile.setTypeDocument(typeDocument);
 
-        return appFile;
+        appFiles.add(appFile);
+
+        return appFiles;
     }
 }
 

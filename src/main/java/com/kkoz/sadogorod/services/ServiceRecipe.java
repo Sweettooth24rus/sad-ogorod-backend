@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,7 +91,7 @@ public class ServiceRecipe {
     private Recipe saveRecipe(Recipe recipe, DtoRecipe dtoRecipe) {
         recipe.setName(dtoRecipe.getName());
         recipe.setDescription(dtoRecipe.getDescription());
-        recipe.setFiles(List.of(this.dtoDoc2AppFile(dtoRecipe.getPhoto(), TypeDocument.RECIPE_PHOTO)));
+        recipe.setFiles(this.dtoDoc2AppFile(dtoRecipe.getPhoto(), TypeDocument.RECIPE_PHOTO));
         recipe.setDays(dtoRecipe.getDays());
         recipe.setLightType(repoLightType.getById(dtoRecipe.getLightType()));
         recipe.setLightTime(dtoRecipe.getLightTime());
@@ -112,9 +113,10 @@ public class ServiceRecipe {
         return savedRecipe;
     }
 
-    private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
-        FileUpload appFile = new FileUpload();
+    private List<FileUpload> dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
+        List<FileUpload> appFiles = new ArrayList<>();
 
+        FileUpload appFile = new FileUpload();
         appFile.setId(dtoFile.getId());
         appFile.setCreated(dtoFile.getCreated());
         appFile.setMimeType(dtoFile.getMimeType());
@@ -124,6 +126,8 @@ public class ServiceRecipe {
         appFile.setStorePath(dtoFile.getStorePath());
         appFile.setTypeDocument(typeDocument);
 
-        return appFile;
+        appFiles.add(appFile);
+
+        return appFiles;
     }
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @NoArgsConstructor
@@ -22,14 +23,14 @@ public class Recipe extends MetaEntityWithFiles {
     private String description;
 
     private Integer days;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private LightType lightType;
     private Integer lightTime;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private GroundType groundType;
     private Integer minTemperature;
     private Integer maxTemperature;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Difficulty difficulty;
 
     private String comment;

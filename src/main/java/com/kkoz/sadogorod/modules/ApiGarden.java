@@ -45,6 +45,7 @@ public class ApiGarden {
         active = !active;
     }
 
+    @Transactional
     @GetMapping("/all")
     public ResponseEntity<Page<DtoGardenPagination>> getPage(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                              @RequestParam(defaultValue = "10") @Min(1) Integer size,
@@ -56,6 +57,7 @@ public class ApiGarden {
         return new ResponseEntity<>(gardenPage, HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping("/")
     public ResponseEntity<Map<String, String>> create(@RequestBody DtoGarden garden) {
         if (!active) {
@@ -78,6 +80,7 @@ public class ApiGarden {
         return new ResponseEntity<>(dtoGarden, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable @Min(1) Integer id,
                                                       @RequestBody DtoGarden garden) {
@@ -90,6 +93,7 @@ public class ApiGarden {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
         if (!active) {
@@ -147,7 +151,7 @@ class ServiceGarden {
     private Garden save(Garden garden, DtoGarden dtoGarden) {
         garden.setName(dtoGarden.getName());
         garden.setDescription(dtoGarden.getDescription());
-        garden.setFiles(List.of(this.dtoDoc2AppFile(dtoGarden.getPhoto(), TypeDocument.GARDEN_PHOTO)));
+        garden.setFiles(this.dtoDoc2AppFile(dtoGarden.getPhoto(), TypeDocument.GARDEN_PHOTO));
         garden.setSquare(dtoGarden.getSquare());
 
         Garden savedGarden;
@@ -162,9 +166,10 @@ class ServiceGarden {
         return savedGarden;
     }
 
-    private FileUpload dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
-        FileUpload appFile = new FileUpload();
+    private List<FileUpload> dtoDoc2AppFile(DtoFileUpload dtoFile, TypeDocument typeDocument) {
+        List<FileUpload> appFiles = new ArrayList<>();
 
+        FileUpload appFile = new FileUpload();
         appFile.setId(dtoFile.getId());
         appFile.setCreated(dtoFile.getCreated());
         appFile.setMimeType(dtoFile.getMimeType());
@@ -174,7 +179,9 @@ class ServiceGarden {
         appFile.setStorePath(dtoFile.getStorePath());
         appFile.setTypeDocument(typeDocument);
 
-        return appFile;
+        appFiles.add(appFile);
+
+        return appFiles;
     }
 }
 
