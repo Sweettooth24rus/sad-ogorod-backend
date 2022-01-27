@@ -89,6 +89,14 @@ public class ApiGarden {
         response.put("response", " [" + updatedGarden.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(serviceGarden.delete(id));
+    }
 }
 
 @Service
@@ -112,6 +120,11 @@ class ServiceGarden {
 
     public Garden getById(Integer id) {
         return repoGarden.getById(id);
+    }
+
+    public String delete(Integer id) {
+        repoGarden.deleteById(id);
+        return "deleted witch id " + id;
     }
 
     public Garden create(DtoGarden dtoGarden) {

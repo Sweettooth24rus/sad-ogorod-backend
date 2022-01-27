@@ -85,6 +85,14 @@ public class ApiGreenhouse {
         response.put("response", " [" + updatedGreenhouse.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(serviceGreenhouse.delete(id));
+    }
 }
 
 @Service
@@ -108,6 +116,11 @@ class ServiceGreenhouse {
 
     public Greenhouse getById(Integer id) {
         return repoGreenhouse.getById(id);
+    }
+
+    public String delete(Integer id) {
+        repoGreenhouse.deleteById(id);
+        return "deleted witch id " + id;
     }
 
     public Greenhouse create(DtoGreenhouse dtoGreenhouse) {

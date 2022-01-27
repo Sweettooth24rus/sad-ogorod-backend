@@ -85,6 +85,14 @@ public class ApiPickle {
         response.put("response", " [" + updatedPickle.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(servicePickle.delete(id));
+    }
 }
 
 @Service
@@ -108,6 +116,11 @@ class ServicePickle {
 
     public Pickle getById(Integer id) {
         return repoPickle.getById(id);
+    }
+
+    public String delete(Integer id) {
+        repoPickle.deleteById(id);
+        return "deleted witch id " + id;
     }
 
     public Pickle create(DtoPickle dtoPickle) {

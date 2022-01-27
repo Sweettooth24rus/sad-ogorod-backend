@@ -85,6 +85,14 @@ public class ApiTea {
         response.put("response", " [" + updatedTea.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(serviceTea.delete(id));
+    }
 }
 
 @Service
@@ -108,6 +116,11 @@ class ServiceTea {
 
     public Tea getById(Integer id) {
         return repoTea.getById(id);
+    }
+
+    public String delete(Integer id) {
+        repoTea.deleteById(id);
+        return "deleted witch id " + id;
     }
 
     public Tea create(DtoTea dtoTea) {

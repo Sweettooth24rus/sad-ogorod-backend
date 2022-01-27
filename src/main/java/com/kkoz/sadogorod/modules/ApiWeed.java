@@ -85,6 +85,14 @@ public class ApiWeed {
         response.put("response", " [" + updatedWeed.getId() + "] was updated");
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Integer id) {
+        if (!active) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(serviceWeed.delete(id));
+    }
 }
 
 @Service
@@ -108,6 +116,11 @@ class ServiceWeed {
 
     public Weed getById(Integer id) {
         return repoWeed.getById(id);
+    }
+
+    public String delete(Integer id) {
+        repoWeed.deleteById(id);
+        return "deleted witch id " + id;
     }
 
     public Weed create(DtoWeed dtoWeed) {
