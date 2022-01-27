@@ -65,6 +65,11 @@ public class ServiceRecipe {
         return repoRecipe.getById(id);
     }
 
+    public String deleteRecipe(Integer id) {
+        repoRecipe.deleteById(id);
+        return "deleted witch id " + id;
+    }
+
     public Recipe createRecipe(DtoRecipe dtoRecipe) {
         Recipe recipe = new Recipe();
         return this.saveRecipe(recipe, dtoRecipe);

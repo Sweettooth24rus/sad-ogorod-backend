@@ -71,4 +71,9 @@ public class ApiRecipe {
         log.info("<- PUT: Recipe [{}] was updated", updatedRecipe.getId());
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRecipe(@PathVariable @Min(1) Integer id) {
+        return ResponseEntity.ok(serviceRecipe.deleteRecipe(id));
+    }
 }
